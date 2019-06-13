@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "587387643590",
+    "firebase_url": "https://budgethandler-4dd29.firebaseio.com",
+    "project_id": "budgethandler-4dd29",
+    "storage_bucket": "budgethandler-4dd29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587387643590:android:314f240c4d591a6d",
+        "android_client_info": {
+          "package_name": "com.example.munnasharma.budgethandler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587387643590-cumua3g76iotmp931fdoa4pekuiq1vsu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.munnasharma.budgethandler",
+            "certificate_hash": "9b55d48df63bf55107f4facdabe1d1a0228bf2e3"
+          }
+        },
+        {
+          "client_id": "587387643590-1kgcicbb7a1bf70vb2nsd8h3uri1ni7s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.munnasharma.budgethandler",
+            "certificate_hash": "55e27cba94a268e315ec9c5bbc98b430901db549"
+          }
+        },
+        {
+          "client_id": "587387643590-g7jmu314luug5974tf01mri8idj8bce6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSCPAg-7mZVg6IlvMBXZKmiFODjDo0jEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587387643590-g7jmu314luug5974tf01mri8idj8bce6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587387643590:android:99b91c5d93d138ff",
+        "android_client_info": {
+          "package_name": "com.example.projectmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587387643590-u2pmtjf4ba81d666kj67gorrunikftve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projectmanager",
+            "certificate_hash": "860364cd6493b765f97f8d2953ac45a6d74e56ea"
+          }
+        },
+        {
+          "client_id": "587387643590-g7jmu314luug5974tf01mri8idj8bce6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSCPAg-7mZVg6IlvMBXZKmiFODjDo0jEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587387643590-g7jmu314luug5974tf01mri8idj8bce6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

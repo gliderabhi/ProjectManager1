@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:id="@+id/layout_root"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:id="@+id/imgProfile"
+        android:layout_margin="8dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:layout_toRightOf="@+id/imgProfile"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/nameText"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Designation"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/nameText"
+        android:layout_toRightOf="@+id/imgProfile"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/desigText"/>
+    
+    <LinearLayout
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/l1"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/imgProfile">
+    <CheckBox
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/check1"
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="Full day"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/l2"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/l1"
+        android:layout_below="@+id/imgProfile">
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/check2"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Half day"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/l3"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/l2"
+        android:layout_below="@+id/imgProfile">
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/check3"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:text="Enter time"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/l4"
+        android:layout_toRightOf="@+id/l3"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/imgProfile">
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/check4"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full day"/>
+    </LinearLayout>
+
+</RelativeLayout>
+
+</android.support.v7.widget.CardView>

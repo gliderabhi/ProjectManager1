@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Ledelse </string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">YOUR_APP_ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+    <!-- Twitter consumer key and secret -->
+    <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
+    <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
+    <string name="select_a_profile_pic">Select a profile pic</string>
+    <string name="name">Name :</string>
+    <string name="address">Address :</string>
+    <string name="mobile_no">Mobile No :</string>
+    <string name="password">Password :</string>
+    <string name="reenter_password">ReEnter Password :</string>
+    <string name="i_am">I am :</string>
+    <string name="i_have_an_organisation">I have an organisation:</string>
+    <string name="name_of_company">Name of company:</string>
+    <string name="contact_of_company">Contact of company:</string>
+    <string name="email_of_company">Email of company:</string>
+    <string name="address_of_company">Address of company:</string>
+    <string name="organisation_details">Organisation Details</string>
+    <string name="ifsc_code">IFSC code:</string>
+    <string name="name_of_bank">Name of bank:</string>
+    <string name="bank_branch">Bank Branch:</string>
+    <string name="user_account_details">User Account Details</string>
+    <string name="a_c_holder_name">A/C holder name:</string>
+    <string name="a_c_number">A/C number</string>
+    <string name="organisation_account_details">Organisation Account details:</string>
+</resources>
