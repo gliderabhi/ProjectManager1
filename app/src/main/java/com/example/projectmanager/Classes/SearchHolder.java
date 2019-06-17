@@ -27,6 +27,7 @@ public class SearchHolder  extends RecyclerView.ViewHolder  {
 
     }
 
+
     public void setImg(String url){
 
         int pxw = (int) (80 * Resources.getSystem().getDisplayMetrics().density);

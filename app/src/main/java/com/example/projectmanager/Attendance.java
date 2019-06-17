@@ -11,13 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,10 +29,10 @@ import android.widget.Toast;
 
 import com.example.projectmanager.Classes.SIteMembers;
 import com.example.projectmanager.Classes.Site;
-import com.example.projectmanager.Classes.UserDetails;
+import com.example.projectmanager.Classes.usrAttendance;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,8 +43,9 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Attendance extends AppCompatActivity {
@@ -55,10 +56,11 @@ public class Attendance extends AppCompatActivity {
     private ArrayList<String > siteNameList;
     private String siteSelected;
     private RecyclerView recyclerView;
-    private LinearLayoutManager linearLayoutManager;
+    private ArrayList<SIteMembers> sIteMembersList;
     private FirebaseRecyclerAdapter<SIteMembers, ViewHolder> adapter1;
 
     private int workDuration;
+    private usrAttendance usrAttendance;
     private String siteId;
     private ProgressBar progress_circular_attend;
 
@@ -79,11 +81,23 @@ public class Attendance extends AppCompatActivity {
         recyclerView=findViewById( R.id.memeberListRec );
         progress_circular_attend=findViewById( R.id.progress_circular_attend );
 
+        sIteMembersList=new ArrayList<>(  );
         calendarView.setVisibility( View.GONE );
         siteNameList=new ArrayList<>(  );
 
-        Date todaysDate= JavaGetTodaysDateNow();
-        date.setText( todaysDate.toString() );
+        String dateStr = "04/05/2010";
+
+        SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
+        Date dateObj = null;
+        try {
+            dateObj = curFormater.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat postFormater = new SimpleDateFormat("dd-MM-yyyy");
+
+         datePresent = postFormater.format(dateObj);
+        date.setText( datePresent );
 
         date.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -98,9 +112,18 @@ public class Attendance extends AppCompatActivity {
                             @NonNull CalendarView view,
                             int year,
                             int month,
-                            int dayOfMonth)
-                    {
-                        datePresent = dayOfMonth + "-" + (month + 1) + "-" + year;
+                            int dayOfMonth) {
+                        if (dayOfMonth < 10) {
+                            if (month < 10) {
+
+                                datePresent = "0" + dayOfMonth + "-" + "0" + (month + 1) + "-" + year;
+                            } else {
+                                datePresent = "0" + dayOfMonth + "-" + (month + 1) + "-" + year;
+                            }
+                        } else {
+                            datePresent = dayOfMonth + "-" + (month + 1) + "-" + year;
+
+                        }
                         date.setText( datePresent );
                         calendarView.setVisibility( View.GONE );
                     }
@@ -139,7 +162,7 @@ public class Attendance extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 siteSelected=siteNameList.get( position );
-                Toast.makeText( getApplicationContext(), siteSelected, Toast.LENGTH_SHORT ).show();
+                //Toast.makeText( getApplicationContext(), siteSelected, Toast.LENGTH_SHORT ).show();
 
                 //get the site id
                 DatabaseReference siteIdFinder=FirebaseDatabase.getInstance().getReference("Site Details");
@@ -151,7 +174,7 @@ public class Attendance extends AppCompatActivity {
                             if(s!=null) {
                                 if (s.getName().matches( siteSelected )) {
                                     siteId = s.getId();
-                                    Toast.makeText( getApplicationContext(), siteId, Toast.LENGTH_SHORT ).show();
+                                    //Toast.makeText( getApplicationContext(), siteId, Toast.LENGTH_SHORT ).show();
                                     progress_circular_attend.setVisibility( View.VISIBLE );
                                     generateList();
                                 }
@@ -179,34 +202,15 @@ public class Attendance extends AppCompatActivity {
     private void generateList() {
         recyclerView= findViewById( R.id.memeberListRec );
         recyclerView.setLayoutManager(new LinearLayoutManager( this ));
-
+        sIteMembersList.clear();
         //write the right query
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference("AttendanceRecords/"+siteId+"/"+datePresent+"/");
         DatabaseReference employeeList=FirebaseDatabase.getInstance().getReference("Site Members/"+siteId+"/");
 
-        query=employeeList.orderByChild("name").limitToLast( 30 );
+        query=employeeList.limitToLast( 30 );
         FirebaseRecyclerOptions<SIteMembers> options =
                 new FirebaseRecyclerOptions.Builder<SIteMembers>()
-                        .setQuery( query, new SnapshotParser<SIteMembers>() {
-                            @NonNull
-                            @Override
-                            public SIteMembers parseSnapshot( DataSnapshot snapshot) {
-                                if (snapshot != null) {
-                                    Toast.makeText( getApplicationContext(),snapshot.child( "imgUrl" ).getValue().toString(),Toast.LENGTH_SHORT ).show();
-
-                                    //Log.e( "msg","items here " );
-                                    return new SIteMembers( snapshot.child( "name" ).getValue().toString(),
-                                            snapshot.child( "designation" ).getValue().toString(),
-                                            snapshot.child( "imgUrl" ).getValue().toString() );
-                                }
-                                else{
-                                    Toast.makeText( getApplicationContext(),"NO data available",Toast.LENGTH_SHORT ).show();
-                                    return null;
-                                }
-                            }
-                        } )
+                        .setQuery( query, SIteMembers.class )
                         .build();
-
         adapter1 = new FirebaseRecyclerAdapter<SIteMembers,ViewHolder>( options ) {
             @NonNull
             @Override
@@ -220,72 +224,106 @@ public class Attendance extends AppCompatActivity {
             }
 
 
+
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, SIteMembers usr) {
-                Toast.makeText( getApplicationContext(),usr.getDesignation(),Toast.LENGTH_SHORT ).show();
+               // Toast.makeText( getApplicationContext(),usr.getDesignation(),Toast.LENGTH_SHORT ).show();
                 holder.setImg( usr.getImgUrl() );
                 holder.setDesig( usr.getDesignation() );
                 holder.setName( usr.getName() );
 
+                sIteMembersList.add( usr );
                 holder.b1.setSelected( false );
                 holder.b2.setSelected( false );
                 holder.b3.setSelected( false );
                 holder.b4.setSelected( false );
 
-                holder.b1.setOnClickListener( new View.OnClickListener() {
+                holder.l1.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(holder.b1.isSelected()){
-                            workDuration=8;
-                        }
+                        holder.b1.setVisibility( View.VISIBLE );
+                        workDuration=8;
+                        DatabaseReference users= FirebaseDatabase.getInstance().getReference("AttendanceRecords/"+siteId+"/"+datePresent+"/"+sIteMembersList.get( position ).getId()+"/");
+                        usrAttendance=new usrAttendance( sIteMembersList.get( position ).getId(),sIteMembersList.get( position ).getName(),String.valueOf( workDuration ) );
+                        users.setValue( usrAttendance ).addOnSuccessListener( new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.e("msg","Loaded");
+                            }
+                        } );
+                        //Toast.makeText( getApplicationContext(),workDuration,Toast.LENGTH_SHORT ).show();
+                        holder.b2.setVisibility( View.GONE );
+                        holder.b3.setVisibility( View.GONE );
+                        holder.b4.setVisibility( View.GONE );
+                        holder.editLay.setVisibility( View.GONE );
                     }
                 } );
-                holder.b2.setOnClickListener( new View.OnClickListener() {
+                holder.l2.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(holder.b2.isSelected()){
-                            workDuration=4;
-                        }
+                        holder.b2.setVisibility( View.VISIBLE );
+                        workDuration=4;
+                        DatabaseReference users= FirebaseDatabase.getInstance().getReference("AttendanceRecords/"+siteId+"/"+datePresent+"/"+sIteMembersList.get( position ).getId()+"/");
+                        usrAttendance=new usrAttendance( sIteMembersList.get( position ).getId(),sIteMembersList.get( position ).getName(),String.valueOf( workDuration ) );
+                        users.setValue( usrAttendance ).addOnSuccessListener( new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.e("msg","Loaded");
+                            }
+                        } );
+                        //Toast.makeText( getApplicationContext(),workDuration,Toast.LENGTH_SHORT ).show();
+                        holder.b3.setVisibility( View.GONE );
+                        holder.b1.setVisibility( View.GONE );
+                        holder.b4.setVisibility( View.GONE );
+                        holder.editLay.setVisibility( View.GONE );
+                    }
+                } );
+                holder.l3.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.b3.setVisibility( View.VISIBLE );
+                        holder.editLay.setVisibility( View.VISIBLE );
+                        holder.b1.setVisibility( View.GONE );
+                        holder.b2.setVisibility( View.GONE );
+                        holder.b4.setVisibility( View.GONE );
                     }
                 } );
 
-                /*holder.b3.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(holder.b3.isSelected()){
-                            holder.editLay.setVisibility( View.VISIBLE );
-
-                        }else{
-                            holder.editLay.setVisibility( View.GONE );
-                        }
-                    }
-                } );*/
-                holder.b4.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //set value accordingly
-
-                    }
-                } );
                 holder.submit.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         workDuration= Integer.parseInt( holder.duration.getText().toString() );
+                        //Toast.makeText( getApplicationContext(),String.valueOf( workDuration),Toast.LENGTH_SHORT ).show();
+                        DatabaseReference users= FirebaseDatabase.getInstance().getReference("AttendanceRecords/"+siteId+"/"+datePresent+"/"+sIteMembersList.get( position ).getId()+"/");
+                        usrAttendance=new usrAttendance( sIteMembersList.get( position ).getId(),sIteMembersList.get( position ).getName(),String.valueOf( workDuration ) );
+                        users.setValue( usrAttendance ).addOnSuccessListener( new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.e("msg","Loaded");
+                            }
+                        } );
+                        holder.editLay.setVisibility( View.GONE );
                     }
                 } );
+                /*holder.submit.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        workDuration= Integer.parseInt( holder.duration.getText().toString() );
+                    }
+                } );*/
             }
 
         };
 
         recyclerView.setAdapter( adapter1 );
-
+        adapter1.startListening();
         progress_circular_attend.setVisibility( View.GONE );
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder  {
         RelativeLayout root;
-         LinearLayout editLay;
-         CheckBox b1,b2,b3,b4;
+         LinearLayout editLay,l1,l2,l3,l4;
+         ImageView b1,b2,b3,b4;
          TextView name,desig;
          ImageView img,submit;
          EditText duration;
@@ -298,15 +336,22 @@ public class Attendance extends AppCompatActivity {
             b3 = itemView.findViewById(R.id.check3);
             b4 = itemView.findViewById(R.id.check4);
             img=itemView.findViewById( R.id.imgProfile );
-            /*editLay = itemView.findViewById(R.id.editLay);
-            duration=findViewById( R.id.durationValue);
-            submit=findViewById( R.id.submit );
-*/
+            desig=itemView.findViewById( R.id.desigText);
+            name=itemView.findViewById( R.id.nameText );
+            editLay = itemView.findViewById(R.id.editLay);
+            duration=itemView.findViewById( R.id.durationValue);
+            submit=itemView.findViewById( R.id.submit );
+
+            l1=itemView.findViewById(R.id.l1  );
+            l2=itemView.findViewById(R.id.l2 );
+            l3=itemView.findViewById(R.id.l3  );
+            l4=itemView.findViewById(R.id.l4  );
             editLay.setVisibility( View.GONE );
 
             //Log.e( "msg","initation" );
 
         }
+
 
 
         public void setImg(String url){
@@ -337,11 +382,7 @@ public class Attendance extends AppCompatActivity {
         }
 
     }
-    private Date JavaGetTodaysDateNow()
-    {
-            Date today = Calendar.getInstance().getTime();
-       return today;
-    }
+
     //setting image of profile as circular
     public class CircleTransform implements Transformation {
         @Override
@@ -378,13 +419,18 @@ public class Attendance extends AppCompatActivity {
         }
     }
 
+
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onStart() {
+        if(adapter1!=null){
+            adapter1.startListening();
+        }
+        super.onStart();
     }
 
     @Override
     protected void onDestroy() {
+        adapter1.stopListening();
         super.onDestroy();
     }
 

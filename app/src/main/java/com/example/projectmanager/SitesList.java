@@ -41,6 +41,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
@@ -57,13 +58,14 @@ public class SitesList extends Activity {
     private ArrayList<String> onGoing,complted;
     private TextView one,two;
     private String id;
+    private SharedPreferences.Editor editor;
     private int height1,height2;
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_sites_list );
         SharedPreferences sp=getSharedPreferences( PACKAGE_NAME,Context.MODE_PRIVATE );
-        SharedPreferences.Editor editor=sp.edit();
+         editor=sp.edit();
 
         user= FirebaseAuth.getInstance().getCurrentUser();
         dataRef= FirebaseDatabase.getInstance().getReference();
@@ -80,12 +82,12 @@ public class SitesList extends Activity {
         onGoing=new ArrayList<>(  );
         complted=new ArrayList<>(  );
 
+
         adapter1 = new ArrayAdapter<>( getApplicationContext(), android.R.layout.simple_list_item_1, onGoing );
         adapter2 = new ArrayAdapter<>( getApplicationContext(), android.R.layout.simple_list_item_1, complted );
 
         ongoing.setAdapter( adapter1 );
         completed.setAdapter( adapter2 );
-
 
         ongoing.setOnItemClickListener( new AdapterView.OnItemClickListener()
         {
@@ -93,10 +95,7 @@ public class SitesList extends Activity {
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3)
             {
-                String value = (String)adapter.getItemAtPosition(position);
-                Toast.makeText( getApplicationContext(),value,Toast.LENGTH_SHORT ).show();
-                // assuming string and if you want to get the value on click of list item
-                // do what you intend to do on click of listview row
+
             }
         });
 
@@ -117,7 +116,8 @@ public class SitesList extends Activity {
         complted.clear();
         height1=0;
         height2=0;
-
+       ArrayList<String > idListOn=new ArrayList<>(  );
+       ArrayList<String> idListComp =new ArrayList<>(  );
         SiteRef = dataRef.child( "/Users/" + user.getUid() + "/Sites Added/" );
         SiteRef.addValueEventListener( new ValueEventListener() {
             @Override
@@ -130,8 +130,10 @@ public class SitesList extends Activity {
 
                     //Log.e( "msg", prgs + " " + site_name );
                     if (prgs.matches( Constants.ongoing )) {
+                        idListOn.add( id );
                         onGoing.add( onGoing.size()+1+": " + site_name );
                     } else if (prgs.matches( Constants.Completed )) {
+                        idListComp.add( id );
                         complted.add( complted.size()+1+": " + site_name );
                     }
                 }
@@ -161,8 +163,10 @@ public class SitesList extends Activity {
                         one.setVisibility( View.GONE );
                         ongoing.setOnItemClickListener( new AdapterView.OnItemClickListener() {
                             @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
+                                editor.putString( ID,idListOn.get( position ) );
+                                editor.apply();
+                                startActivity( new Intent( getApplicationContext(),AddSiteMembers.class ) );
                             }
                         } );
                     }
@@ -196,7 +200,14 @@ public class SitesList extends Activity {
                             completed.setVisibility( View.VISIBLE );
                             two.setVisibility( View.GONE );
                             //what to do when item is clicked yet to know
-
+                            completed.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
+                                    editor.putString( ID,idListComp.get( position ) );
+                                    editor.apply();
+                                    startActivity( new Intent( getApplicationContext(),AddSiteMembers.class ) );
+                                }
+                            } );
                         }
                     }else {
                         completed.setVisibility( View.GONE );
@@ -221,8 +232,6 @@ public class SitesList extends Activity {
         progress.dismiss();
         startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
     }
-
-
 
     private void signout() {
         AuthUI.getInstance()
