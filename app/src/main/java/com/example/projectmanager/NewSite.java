@@ -8,6 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +21,7 @@ import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectmanager.Classes.Constants;
@@ -26,7 +30,6 @@ import com.example.projectmanager.Classes.Site;
 import com.example.projectmanager.Classes.UserDetails;
 import com.example.projectmanager.Classes.UserSite;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -37,21 +40,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-
-import java.util.Date;
-
 import static com.example.projectmanager.Classes.Constants.Creator;
+import static com.example.projectmanager.Classes.Constants.KEY_LATITUDE;
+import static com.example.projectmanager.Classes.Constants.KEY_LONGITUDE;
+import static com.example.projectmanager.Classes.Constants.Locale;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
-import static com.example.projectmanager.Classes.Constants.SiteNAme;
+import static com.example.projectmanager.Classes.Constants.hideSoftKeyboard;
+import static com.example.projectmanager.Classes.Constants.mapStr1;
+import static com.example.projectmanager.Classes.Constants.mapStr2;
 import static com.example.projectmanager.Classes.Constants.ongoing;
 import static com.example.projectmanager.Classes.Constants.priority;
 
 public class NewSite extends AppCompatActivity {
 
-    private EditText siteName,siteLoc,siteCLient;
+    private EditText siteName,siteCLient;
     private Spinner sitePriority;
     private ImageView proceed,cancel;
     private String startDate,site_name,site_loc,site_client,sitePrior;
@@ -59,20 +62,34 @@ public class NewSite extends AppCompatActivity {
     private FirebaseUser user;
     private DatabaseReference dataRef,SiteRef;
     private String id;
+    private EditText loc;
+    private TextView siteLoc;
+    private ImageView mapButton;
     private String imgurl;
+    private SharedPreferences pref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_new_site );
 
+        hideSoftKeyboard(this);
         siteCLient=findViewById( R.id. client_name);
         siteLoc=findViewById( R.id.locationSite );
+        mapButton=findViewById( R.id.mapSite );
         siteName=findViewById( R.id. site_name);
         sitePriority=findViewById( R.id.prioritySpinner );
         calendarView=findViewById( R.id. calender);
         proceed=findViewById( R.id.proceed );
         cancel=findViewById( R.id.cancel );
+        loc=findViewById( R.id.locationSites );
 
+
+        pref = getApplicationContext().getSharedPreferences( Constants.Pref, 0); // 0 - for private mode
+        site_loc=pref.getString( KEY_LATITUDE,"0" ) + "/"+ pref.getString( KEY_LONGITUDE,"0" );
+        siteLoc.setText( pref.getString( KEY_LATITUDE,"0" ) + "/"+ pref.getString( KEY_LONGITUDE,"0" ) );
+        if(!pref.getString( Locale,"" ).matches( "" )){
+            siteLoc.setText( pref.getString( Locale,"" ) );
+        }
         user= FirebaseAuth.getInstance().getCurrentUser();
         dataRef= FirebaseDatabase.getInstance().getReference();
         SiteRef = dataRef.child( "/Users/" );
@@ -97,6 +114,13 @@ public class NewSite extends AppCompatActivity {
 
                                                        }
                                                    });
+
+        mapButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity( new Intent( getApplicationContext(), MapsActivity.class ) );
+            }
+        } );
         calendarView.setOnDateChangeListener(
                 new CalendarView.OnDateChangeListener() {
                     @Override
@@ -111,6 +135,22 @@ public class NewSite extends AppCompatActivity {
                     }
 
                 });
+
+        loc.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input=s.toString();
+                String link = mapStr1+input+mapStr2;
+                Log.e("msg",link);
+
+            }
+        } );
 
         long date=calendarView.getDate();
 
@@ -143,9 +183,23 @@ public class NewSite extends AppCompatActivity {
                     if(!sitePrior.matches( "" ) || sitePrior!=null){
 
                         site_name=siteName.getText().toString().trim();
-                        site_loc=siteLoc.getText().toString().trim();
+                        //site_loc=siteLoc.getText().toString().trim();
                         site_client=siteCLient.getText().toString().trim();
                         id= startDate+site_name;
+                        Log.e( "msg",site_loc );
+                        if(site_loc.matches( "00" )){
+                            AlertDialog.Builder builder=new AlertDialog.Builder( NewSite.this );
+                            builder.setMessage( "Please add the site location " )
+                                    .setPositiveButton( "Yes", (dialog, which) -> {
+                                        startActivity( new Intent( getApplicationContext(),MapsActivity.class ) );
+                                        site_loc=pref.getString( KEY_LATITUDE,"0" ) + "/"+ pref.getString( KEY_LONGITUDE,"0" );
+                                    } )
+                                    .setNegativeButton( "No", (dialog, which) -> {
+                                        site_loc=site_loc;
+                                    } );
+                            builder.create();
+                            builder.show();
+                        }
                         Site site=new Site( site_name,site_client,site_loc,sitePrior,startDate,"End date can be specified its optional", site_client, Constants.ongoing ,id);
 
                         SiteRef = dataRef.child("/Site Details/"+id+"/");
@@ -160,7 +214,7 @@ public class NewSite extends AppCompatActivity {
                         newRef.setValue( members ).addOnFailureListener( e -> e.printStackTrace() );
 
                         UserSite siteUser=new UserSite(id ,ongoing,site_name);
-                        DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Users/"+members.getId()+"/Sites Added/"+id+"/");
+                        DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Sites/"+members.getId()+"/Sites Added/"+id+"/");
                         siteRef.setValue( siteUser ).addOnFailureListener( e ->
                                 Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show()   );
 
@@ -267,4 +321,12 @@ public class NewSite extends AppCompatActivity {
         startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
     }
 
+    @Override
+    protected void onDestroy() {
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putString( KEY_LATITUDE,"0" );
+        editor.putString( KEY_LONGITUDE,"0" );
+        editor.apply();
+        super.onDestroy();
+    }
 }

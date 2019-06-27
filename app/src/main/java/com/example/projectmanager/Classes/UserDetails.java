@@ -32,6 +32,15 @@ public class UserDetails {
     public UserDetails(){
 
     }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }

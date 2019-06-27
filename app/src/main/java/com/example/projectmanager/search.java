@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
 import static com.example.projectmanager.Classes.Constants.SiteNAme;
+import static com.example.projectmanager.Classes.Constants.hideSoftKeyboard;
 import static com.example.projectmanager.Classes.Constants.ongoing;
 
 public class search extends AppCompatActivity {
@@ -78,6 +79,7 @@ public class search extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_search );
+        hideSoftKeyboard(this);
 
         result=findViewById( R.id. searchResult);
         searchText=findViewById( R.id.searchBar );
@@ -259,7 +261,7 @@ public class search extends AppCompatActivity {
                             Toast.makeText( getApplicationContext(),"Unable to add the user please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show() );
 
                     //add the site to the added persons database also
-                    DatabaseReference addedRef = FirebaseDatabase.getInstance().getReference( "/Users/" + userDetails.getId() +"/Sites Added/"+ sp.getString( ID,"" )+"/"+userDetails.getId() );
+                    DatabaseReference addedRef = FirebaseDatabase.getInstance().getReference( "/Sites/" + userDetails.getId() +"/Sites Added/"+ sp.getString( ID,"" )+"/" );
                     UserSite userSite=new UserSite( userDetails.getId(), ongoing,userDetails.getName() );
                     addedRef.setValue( userSite );
                     startActivity( new Intent( getApplicationContext(),AddSiteMembers.class ) );

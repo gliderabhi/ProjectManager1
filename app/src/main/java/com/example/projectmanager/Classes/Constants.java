@@ -1,9 +1,12 @@
 package com.example.projectmanager.Classes;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.WindowManager;
 
 import com.squareup.picasso.Transformation;
 
@@ -27,6 +30,10 @@ public class Constants {
     public static String SiteNAme="SiteName";
     public static String Creator="Creator";
     public static String activities[]={"Sites","Employees","Attendance Register","Materials","Suppliers","Materials Supply Ledgers"};
+    public static String Locale="locale";
+    public static String Male="Male";
+    public static String Female="Female";
+
     public static class CircleTransform implements Transformation {
         @Override
         public Bitmap transform(Bitmap source) {
@@ -62,4 +69,10 @@ public class Constants {
         }
     }
 
+    public static String mapStr1= "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=";
+    public static String mapStr2= "&types=geocode&language=fr&key=AIzaSyCyo9NTN6KV4Oo-n-CcSsfiAQ1-5fSZEME";
+
+    public static void hideSoftKeyboard(Activity act){
+        act.getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
 }

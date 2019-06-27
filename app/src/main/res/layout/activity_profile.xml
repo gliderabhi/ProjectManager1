@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="ContentDescription"
+    android:background="#fff"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ScrollView
         android:layout_width="match_parent"
@@ -89,17 +90,79 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="@string/address" />
-        <EditText
-            android:layout_width="250dp"
+        <TextView
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:text="Profile loc "
+            android:padding="4dp"
+            android:textSize="16dp"
             android:id="@+id/AddressEdit"
             />
+       <ImageView android:id="@+id/mapProf"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:src="@drawable/map"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sex"
+        android:layout_below="@+id/address"
+        android:orientation="horizontal"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        >
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Sex "
+            android:padding="4dp"
+            android:textSize="16dp"
+            android:id="@+id/sexEdit"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/maleLay"
+            android:orientation="horizontal">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/male"/>
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/femaleLay"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/female"/>
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mobile"
-        android:layout_below="@+id/address"
+        android:layout_below="@+id/sex"
         android:orientation="horizontal"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"

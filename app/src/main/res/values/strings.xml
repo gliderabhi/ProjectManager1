@@ -27,4 +27,5 @@
     <string name="a_c_holder_name">A/C holder name:</string>
     <string name="a_c_number">A/C number</string>
     <string name="organisation_account_details">Organisation Account details:</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

@@ -147,7 +147,7 @@ public class AddSiteMembers extends AppCompatActivity {
         recyclerView.setLayoutManager( linearLayoutManager );
         FirebaseRecyclerOptions<SIteMembers> options =
                 new FirebaseRecyclerOptions.Builder<SIteMembers>()
-                        .setQuery( query, new SnapshotParser<SIteMembers>() {
+                        .setQuery( query, /*new SnapshotParser<SIteMembers>() {
                             @NonNull
                             @Override
                             public SIteMembers parseSnapshot( DataSnapshot snapshot) {
@@ -162,7 +162,7 @@ public class AddSiteMembers extends AppCompatActivity {
                                     return null;
                                 }
                             }
-                        } /*SIteMembers.class*/ )
+                        } */SIteMembers.class )
                         .build();
         adapter1 = new FirebaseRecyclerAdapter<SIteMembers, SearchHolders>( options ) {
 

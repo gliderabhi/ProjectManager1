@@ -2,13 +2,11 @@ package com.example.projectmanager;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,10 +29,8 @@ import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.OrganisationDetails;
 import com.example.projectmanager.Classes.UserDetails;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,11 +42,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 import java.util.regex.Pattern;
+
+import static com.example.projectmanager.Classes.Constants.Female;
+import static com.example.projectmanager.Classes.Constants.KEY_LATITUDE;
+import static com.example.projectmanager.Classes.Constants.KEY_LONGITUDE;
+import static com.example.projectmanager.Classes.Constants.Locale;
+import static com.example.projectmanager.Classes.Constants.Male;
+import static com.example.projectmanager.Classes.Constants.hideSoftKeyboard;
 
 public class Profile extends AppCompatActivity implements
         AdapterView.OnItemSelectedListener {
@@ -57,7 +58,7 @@ public class Profile extends AppCompatActivity implements
     private SharedPreferences.Editor editor;
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageView profilePic;
-    private EditText name,address,mobileNO,pass,checkPass,usrAccname,userAccNo,userIFSC,userBankName,userBankBranch,orgName,orgAddress,orgEmail,orgMOb,orgGstin;
+    private EditText name,mobileNO,pass,checkPass,usrAccname,userAccNo,userIFSC,userBankName,userBankBranch,orgName,orgAddress,orgEmail,orgMOb,orgGstin;
     private SharedPreferences pref;
     private String nme,addres,mobile_nO,picUrl,desigTit;
     private RelativeLayout orgDetailsREl,orgAccDelRel;
@@ -72,11 +73,16 @@ public class Profile extends AppCompatActivity implements
     private Spinner orglist,desigList;
     private int fillCount=0;
     private TextView designation;
+    private TextView address;
+    private ImageView mapButton;
+    private LinearLayout maleLay,femaleLay;
+    private String sex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_profile );
+        hideSoftKeyboard(this);
         mFirebase= FirebaseDatabase.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         mAuth=FirebaseAuth.getInstance();
@@ -154,21 +160,20 @@ public class Profile extends AppCompatActivity implements
         ImageView cancel = findViewById( R.id.cancel );
         ImageView upload = findViewById( R.id.proceed );
 
-        cancel.setOnClickListener( v -> {
+        cancel.setOnClickListener( (View v) -> {
             startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
 
         } );
 
-        upload.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(fillCount==1){
-                    startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
+        upload.setOnClickListener( v -> {
+           /* if(fillCount==1){
+                startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
 
-                }else {
-                    uploadImage();
-                }
+            }else {
+                uploadImage();
             }
+            */
+           uploadImage();
         } );
 
 
@@ -204,9 +209,20 @@ public class Profile extends AppCompatActivity implements
                                         .load( usr.getImageUrl() )
                                         .fit()
                                         .into( profilePic );
+                                picUrl= usr.getImageUrl();
                             }
                             name.setText( usr.getName() );
-                            address.setText( usr.getAddress() );
+
+                            if(usr.getSex().matches( Male )){
+                                maleLay.setBackgroundColor( Color.YELLOW );
+                                sex=Male;
+                            }else{
+                                femaleLay.setBackgroundColor( Color.YELLOW );
+                                sex=Female;
+                            }
+                            if(usr.getAddress()!=null) {
+                                address.setText( usr.getAddress() );
+                            }
                             mobileNO.setText( usr.getMobileNo() );
                             designation.setText( usr.getTitle() );
                             designation.setVisibility( View.VISIBLE );
@@ -229,7 +245,7 @@ public class Profile extends AppCompatActivity implements
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e( "msg", "onCancelled", databaseError.toException() );
+                //Log.e( "msg", "onCancelled", databaseError.toException() );
                 progress.dismiss();
             }
 
@@ -249,6 +265,32 @@ public class Profile extends AppCompatActivity implements
         mobileNO=findViewById( R.id.mobileEdit );
         checkPass=findViewById( R.id.passCheckEdit );
         designation=findViewById( R.id.designationText );
+        mapButton=findViewById( R.id.mapProf );
+        maleLay=findViewById( R.id.maleLay);
+        femaleLay=findViewById( R.id.femaleLay );
+
+        maleLay.setOnClickListener( v -> {
+            sex= Male;
+            maleLay.setBackgroundColor( Color.YELLOW);
+            femaleLay.setBackgroundColor( Color.WHITE );
+        } );
+        femaleLay.setOnClickListener( v -> {
+            sex=Female;
+            femaleLay.setBackgroundColor( Color.YELLOW );
+            maleLay.setBackgroundColor( Color.WHITE );
+        } );
+
+        mapButton.setOnClickListener( v -> {
+            startActivity(new Intent(   getApplicationContext(), MapsActivity.class ));
+            pref.getString( Locale,"0" );
+            if(!pref.getString( Locale,"0" ).matches( "0" )){
+                address.setText( pref.getString( Locale,"0" ));
+            }else{
+
+                address.setText( pref.getString( KEY_LATITUDE,"0" ) + "/"+ pref.getString( KEY_LONGITUDE,"0" ) );
+            }
+        } );
+
 
          orglist = findViewById( R.id.orgList );
          desigList = findViewById( R.id.designationList );
@@ -307,22 +349,14 @@ public class Profile extends AppCompatActivity implements
         progress.show();
         if(mImageUri!=null) {
             new Thread( () -> mStorageRef.putFile( mImageUri )
-                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            mStorageRef.getDownloadUrl().addOnSuccessListener( new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Log.e( "pic url",uri.toString() );
-                                    picUrl = uri.toString();
-                                    getData();
-                                    progress.dismiss();
-                                    progress.cancel();
+                    .addOnSuccessListener( taskSnapshot -> mStorageRef.getDownloadUrl().addOnSuccessListener( uri -> {
+                        //Log.e( "pic url",uri.toString() );
+                        picUrl = uri.toString();
+                        getData();
+                        progress.dismiss();
+                        progress.cancel();
 
-                                }
-                            } );
-                        }
-                    } )
+                    } ) )
                     .addOnFailureListener( exception -> {
                         progress.dismiss();
                         progress.cancel();
@@ -331,24 +365,19 @@ public class Profile extends AppCompatActivity implements
         }else{
             AlertDialog.Builder builder=new AlertDialog.Builder( Profile.this );
             builder.setMessage( "Do you want to add a profile pic " )
-                    .setPositiveButton( "Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent();
-                            intent.setType("image/*");
-                            intent.setAction( Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(intent, PICK_IMAGE_REQUEST);
-                        }
+                    .setPositiveButton( "Yes", (dialog, which) -> {
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.setAction( Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(intent, PICK_IMAGE_REQUEST);
                     } )
-                    .setNegativeButton( "No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            mImageUri=null;
-                            picUrl="";
-                            getData();
-                            progress.dismiss();
+                    .setNegativeButton( "No", (dialog, which) -> {
+                        mImageUri=null;
+                        if(picUrl==null) {
+                            picUrl = "";
                         }
+                        getData();
+                        progress.dismiss();
                     } );
             builder.create();
             builder.show();
@@ -364,6 +393,7 @@ public class Profile extends AppCompatActivity implements
 
     private void getData() {
 
+        progress.show();
         //user data
         mobile_nO=mobileNO.getText().toString().trim();
         boolean check;
@@ -381,18 +411,24 @@ public class Profile extends AppCompatActivity implements
         if(check) {
             nme = name.getText().toString();
             if (!nme.matches( "" )) {
-                addres = address.getText().toString().trim();
-                if (!addres.matches( "" )) {
-                    Log.e( "pic url",picUrl );
-                    usr=new UserDetails( nme,addres,mobile_nO,desigTit,picUrl,user.getUid(),"sex");
+                if(pref.getString( KEY_LATITUDE,"0" ).matches( "0" )) {
+                    addres = address.getText().toString().trim();
+                    if (!addres.matches( "" )) {
+                        //Log.e( "pic url", picUrl );
+
+                        //put check for sex
+                        usr = new UserDetails( nme, addres, mobile_nO, desigTit, picUrl, user.getUid(), sex );
+                        //add user to firebase dtaabse
+                        newRef = mDatabaseRef.child( "/Users/" + user.getUid() );
+                        newRef.setValue( usr ).addOnFailureListener( e -> e.printStackTrace() );
+                    }
+                }else{
+                    //Log.e( "pic url", picUrl );
+                    addres=pref.getString( KEY_LATITUDE,"0" ) + "/"+ pref.getString( KEY_LONGITUDE,"0" );
+                    usr = new UserDetails( nme, addres, mobile_nO, desigTit, picUrl, user.getUid(), sex );
                     //add user to firebase dtaabse
-                     newRef = mDatabaseRef.child("/Users/"+ user.getUid());
-                    newRef.setValue(usr).addOnFailureListener( new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            e.printStackTrace();
-                        }
-                    } );
+                    newRef = mDatabaseRef.child( "/Users/" + user.getUid() );
+                    newRef.setValue( usr ).addOnFailureListener( e -> e.printStackTrace() );
                 }
             }
         }
@@ -408,12 +444,7 @@ public class Profile extends AppCompatActivity implements
         userBank=new BankDetails( usr_acc_name,usr_acc_no,usr_ifsc,usr_bank,usr_branch );
         //adding user bank details
          newRef = mDatabaseRef.child("/Bank Details/Users/"+ user.getUid());
-        newRef.setValue( userBank ).addOnFailureListener( new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                e.printStackTrace();
-            }
-        } );;
+         newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );;
 
 
         //if organisation is yes
@@ -425,12 +456,7 @@ public class Profile extends AppCompatActivity implements
                org_gstin=orgGstin.getText().toString().trim();
                orgDet=new OrganisationDetails( org_nm,org_add,org_email,org_mob,org_gstin );
                newRef = mDatabaseRef.child("/Bank Details/Users/"+ user.getUid());
-               newRef.setValue( userBank ).addOnFailureListener( new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-                       e.printStackTrace();
-                   }
-               } );;
+               newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );;
 
                //organisation bank details add to firebase
                org_ac_name=orgNAme.getText().toString().trim();
@@ -440,16 +466,13 @@ public class Profile extends AppCompatActivity implements
                org_acc_no=orgAccNo.getText().toString().trim();
                orgBnk=new BankDetails( org_ac_name,org_acc_no,org_ac_ifsc,org_bank,org_branch );
                newRef = mDatabaseRef.child("/Bank Details/Organisation/"+ user.getUid());
-               newRef.setValue( userBank ).addOnFailureListener( new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-                       e.printStackTrace();
-                   }
-               } );;
+               newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );;
            }
 
 
         startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
+           Toast.makeText( getApplicationContext(),"Details Updated ",Toast.LENGTH_SHORT ).show();
+           progress.dismiss();
     }
 
 
@@ -478,6 +501,9 @@ public class Profile extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
+        editor.putString( KEY_LATITUDE,"0" );
+        editor.putString( KEY_LONGITUDE,"0" );
+        editor.apply();
         super.onDestroy();
     }
 
@@ -485,7 +511,7 @@ public class Profile extends AppCompatActivity implements
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
           switch (arg0.getId()){
               case R.id.orgList:
-                  Log.e( Constants.Msg,"org spinner" );
+                  //Log.e( Constants.Msg,"org spinner" );
                   editor.putString( Constants.Org,Constants.org[position] );
                   editor.apply();
                   Toast.makeText( getApplicationContext(),"yes", Toast.LENGTH_LONG ).show();
@@ -498,7 +524,7 @@ public class Profile extends AppCompatActivity implements
                   }
                   break;
               case R.id.designationList:
-                  Log.e( Constants.Msg,"desig spinner" );
+                  //Log.e( Constants.Msg,"desig spinner" );
                   editor.putString( Constants.Designation,Constants.desig[position] );
                   editor.apply(); break;
           }
@@ -519,12 +545,10 @@ public class Profile extends AppCompatActivity implements
     private void signout() {
         AuthUI.getInstance()
                 .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(Profile.this, "User Signed Out", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
+                .addOnCompleteListener( task -> {
+                    Toast.makeText(Profile.this, "User Signed Out", Toast.LENGTH_SHORT).show();
+                    finish();
+                } );
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

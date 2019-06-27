@@ -118,65 +118,66 @@ public class SitesList extends Activity {
         height2=0;
        ArrayList<String > idListOn=new ArrayList<>(  );
        ArrayList<String> idListComp =new ArrayList<>(  );
-        SiteRef = dataRef.child( "/Users/" + user.getUid() + "/Sites Added/" );
+        SiteRef = dataRef.child( "/Sites/" + user.getUid() + "/Sites Added/" );
         SiteRef.addValueEventListener( new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    UserSite usr = dataSnapshot1.getValue( UserSite.class );
-                    String site_name = usr.getName();
-                    id = usr.getId();
-                    String prgs = usr.getProgress();
+            public void onDataChange( DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        UserSite usr = dataSnapshot1.getValue( UserSite.class );
+                        String site_name = usr.getName();
+                        id = usr.getId();
+                        String prgs = usr.getProgress();
 
-                    //Log.e( "msg", prgs + " " + site_name );
-                    if (prgs.matches( Constants.ongoing )) {
-                        idListOn.add( id );
-                        onGoing.add( onGoing.size()+1+": " + site_name );
-                    } else if (prgs.matches( Constants.Completed )) {
-                        idListComp.add( id );
-                        complted.add( complted.size()+1+": " + site_name );
+                        //Log.e( "msg", prgs + " " + site_name );
+                        if (prgs.matches( Constants.ongoing )) {
+                            idListOn.add( id );
+                            onGoing.add( onGoing.size() + 1 + ": " + site_name );
+                        } else if (prgs.matches( Constants.Completed )) {
+                            idListComp.add( id );
+                            complted.add( complted.size() + 1 + ": " + site_name );
+                        }
                     }
-                }
-                if (onGoing.size() != 0) {
+                    if (onGoing.size() != 0) {
 
-                    ListAdapter listadp = ongoing.getAdapter();
-                    if (listadp != null) {
-                        int totalHeight = 0;
-                        for (int i = 0; i < listadp.getCount(); i++) {
-                            View listItem = listadp.getView( i, null, ongoing );
-                            listItem.measure( 0, 0 );
-                            totalHeight += listItem.getMeasuredHeight();
-                        }
-                        ViewGroup.LayoutParams params = ongoing.getLayoutParams();
-                        params.height = totalHeight + (ongoing.getDividerHeight() * (listadp.getCount() - 1));
-
-                        if (totalHeight < pixels) {
-                            ongoing.setLayoutParams( params );
-                            ongoing.requestLayout();
-                        } else {
-                            params.height = pixels;
-                            ongoing.setLayoutParams( params );
-                            ongoing.requestLayout();
-
-                        }
-                        ongoing.setVisibility( View.VISIBLE );
-                        one.setVisibility( View.GONE );
-                        ongoing.setOnItemClickListener( new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
-                                editor.putString( ID,idListOn.get( position ) );
-                                editor.apply();
-                                startActivity( new Intent( getApplicationContext(),AddSiteMembers.class ) );
+                        ListAdapter listadp = ongoing.getAdapter();
+                        if (listadp != null) {
+                            int totalHeight = 0;
+                            for (int i = 0; i < listadp.getCount(); i++) {
+                                View listItem = listadp.getView( i, null, ongoing );
+                                listItem.measure( 0, 0 );
+                                totalHeight += listItem.getMeasuredHeight();
                             }
-                        } );
-                    }
-                }else {
+                            ViewGroup.LayoutParams params = ongoing.getLayoutParams();
+                            params.height = totalHeight + (ongoing.getDividerHeight() * (listadp.getCount() - 1));
+
+                            if (totalHeight < pixels) {
+                                ongoing.setLayoutParams( params );
+                                ongoing.requestLayout();
+                            } else {
+                                params.height = pixels;
+                                ongoing.setLayoutParams( params );
+                                ongoing.requestLayout();
+
+                            }
+                            ongoing.setVisibility( View.VISIBLE );
+                            one.setVisibility( View.GONE );
+                            ongoing.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
+                                    editor.putString( ID, idListOn.get( position ) );
+                                    editor.apply();
+                                    startActivity( new Intent( getApplicationContext(), AddSiteMembers.class ) );
+                                }
+                            } );
+                        }
+                    } else {
                         ongoing.setVisibility( View.GONE );
                         one.setVisibility( View.VISIBLE );
                     }
 
                     if (complted.size() != 0) {
-                       ListAdapter  listadp = completed.getAdapter();
+                        ListAdapter listadp = completed.getAdapter();
                         if (listadp != null) {
                             int totalHeight = 0;
                             for (int i = 0; i < listadp.getCount(); i++) {
@@ -203,18 +204,22 @@ public class SitesList extends Activity {
                             completed.setOnItemClickListener( new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
-                                    editor.putString( ID,idListComp.get( position ) );
+                                    editor.putString( ID, idListComp.get( position ) );
                                     editor.apply();
-                                    startActivity( new Intent( getApplicationContext(),AddSiteMembers.class ) );
+                                    startActivity( new Intent( getApplicationContext(), AddSiteMembers.class ) );
                                 }
                             } );
                         }
-                    }else {
+                    } else {
                         completed.setVisibility( View.GONE );
                         two.setVisibility( View.VISIBLE );
                     }
 
                     progress.dismiss();
+                } else {
+
+                    progress.dismiss();
+                }
             }
 
             @Override
