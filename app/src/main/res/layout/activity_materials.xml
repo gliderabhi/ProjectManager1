@@ -1,9 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Materials">
 
-</android.support.constraint.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Daily Expenditure "
+                android:id="@+id/headerToop"
+                android:textSize="19dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/l1"
+                android:layout_below="@+id/headerToop"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="100dp"
+                    android:text="Site name "
+                    android:textSize="18dp"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/sitename"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/l2"
+                android:layout_below="@+id/l1"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="100dp"
+                    android:text="From : "
+                    android:textSize="18dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fromName"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/l3"
+                android:layout_below="@+id/l2"
+                >
+                <TextView
+                    android:layout_width="40dp"
+                    android:text="SNo. "
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="#000" />
+                <TextView
+                    android:layout_width="70dp"
+                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:text="Name "/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="#000" />
+                <TextView
+                    android:layout_width="70dp"
+                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:text="Quantity "/>
+                <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="#000" />
+                <TextView
+                    android:layout_width="70dp"
+                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:text="Unit "/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="#000" />
+                <TextView
+                    android:layout_width="70dp"
+                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:text="Rate "/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+                    android:background="#000" />
+                <TextView
+                    android:layout_width="70dp"
+                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:text="Amount "/>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recylerAmount"
+                android:layout_below="@+id/l3"
+                android:layout_marginTop="20dp"
+                ></android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

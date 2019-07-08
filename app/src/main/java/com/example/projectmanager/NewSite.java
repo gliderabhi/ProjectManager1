@@ -185,7 +185,7 @@ public class NewSite extends AppCompatActivity {
                         site_name=siteName.getText().toString().trim();
                         //site_loc=siteLoc.getText().toString().trim();
                         site_client=siteCLient.getText().toString().trim();
-                        id= startDate+site_name;
+                        id= startDate+"_"+site_name;
                         Log.e( "msg",site_loc );
                         if(site_loc.matches( "00" )){
                             AlertDialog.Builder builder=new AlertDialog.Builder( NewSite.this );

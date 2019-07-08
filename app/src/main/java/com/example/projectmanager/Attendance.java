@@ -1,6 +1,8 @@
 package com.example.projectmanager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -48,6 +50,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.example.projectmanager.Classes.Constants.ID;
+import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+
 public class Attendance extends AppCompatActivity {
 
     private CalendarView calendarView;
@@ -85,6 +90,8 @@ public class Attendance extends AppCompatActivity {
         calendarView.setVisibility( View.GONE );
         siteNameList=new ArrayList<>(  );
 
+        generateList();
+
         String dateStr = "04/05/2010";
 
         SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
@@ -99,36 +106,23 @@ public class Attendance extends AppCompatActivity {
          datePresent = postFormater.format(dateObj);
         date.setText( datePresent );
 
-        date.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.setVisibility( View.VISIBLE );
-            }
-        } );
+        date.setOnClickListener( v -> calendarView.setVisibility( View.VISIBLE ) );
         calendarView.setOnDateChangeListener(
-                new CalendarView.OnDateChangeListener() {
-                    @Override
-                    public void onSelectedDayChange(
-                            @NonNull CalendarView view,
-                            int year,
-                            int month,
-                            int dayOfMonth) {
-                        if (dayOfMonth < 10) {
-                            if (month < 10) {
+                (view, year, month, dayOfMonth) -> {
+                    if (dayOfMonth < 10) {
+                        if (month < 10) {
 
-                                datePresent = "0" + dayOfMonth + "-" + "0" + (month + 1) + "-" + year;
-                            } else {
-                                datePresent = "0" + dayOfMonth + "-" + (month + 1) + "-" + year;
-                            }
+                            datePresent = "0" + dayOfMonth + "-" + "0" + (month + 1) + "-" + year;
                         } else {
-                            datePresent = dayOfMonth + "-" + (month + 1) + "-" + year;
-
+                            datePresent = "0" + dayOfMonth + "-" + (month + 1) + "-" + year;
                         }
-                        date.setText( datePresent );
-                        calendarView.setVisibility( View.GONE );
-                    }
+                    } else {
+                        datePresent = dayOfMonth + "-" + (month + 1) + "-" + year;
 
-                });
+                    }
+                    date.setText( datePresent );
+                    calendarView.setVisibility( View.GONE );
+                } );
 
         //generate sitename list
         progress_circular_attend.setVisibility( View.VISIBLE );
@@ -204,6 +198,10 @@ public class Attendance extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager( this ));
         sIteMembersList.clear();
         //write the right query
+
+        SharedPreferences sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE );
+        siteId=sp.getString( ID, "" );
+        Log.e( "msg",siteId);
         DatabaseReference employeeList=FirebaseDatabase.getInstance().getReference("Site Members/"+siteId+"/");
 
         query=employeeList.limitToLast( 30 );
@@ -359,18 +357,11 @@ public class Attendance extends AppCompatActivity {
             int pxw = (int) (90 * Resources.getSystem().getDisplayMetrics().density);
             int pxh = (int) (90 * Resources.getSystem().getDisplayMetrics().density);
 
-            Picasso.get().load(url ).resize(pxw,pxh).transform(new CircleTransform()).into( img, new Callback() {
-                @Override
-                public void onSuccess() {
-
+            if(url!=null) {
+                if (!url.matches( "" )) {
+                    Picasso.get().load( url ).resize( pxw, pxh ).transform( new CircleTransform() ).into( img );
                 }
-
-                @Override
-                public void onError(Exception e) {
-                    e.printStackTrace();
-                }
-            } );
-
+            }
         }
 
         public void setName(String nme) {
@@ -436,6 +427,6 @@ public class Attendance extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
+        startActivity( new Intent( getApplicationContext(),mainMenu.class ) );
     }
 }

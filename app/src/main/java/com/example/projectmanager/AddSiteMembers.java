@@ -31,6 +31,7 @@ import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.SIteMembers;
 import com.example.projectmanager.Classes.Site;
 import com.example.projectmanager.Classes.UserSite;
+import com.example.projectmanager.Classes.ViewHolder;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -57,17 +58,15 @@ import static com.example.projectmanager.Classes.Constants.ongoing;
 
 public class AddSiteMembers extends AppCompatActivity {
 
-    private ListView membersList;
     private ArrayList<String> members;
     private ArrayList<SIteMembers> sitesMembers;
     private Button add;
-    private TextView site_name, siteLoc, sitestart, sitePriority;
     private ArrayAdapter<String> adapter;
     private ValueEventListener value;
     private DatabaseReference newRef;
     private SharedPreferences sp;
     private RecyclerView recyclerView;
-    private FirebaseRecyclerAdapter<SIteMembers, SearchHolders> adapter1;
+    private FirebaseRecyclerAdapter<SIteMembers, ViewHolder> adapter1;
     private LinearLayoutManager linearLayoutManager;
 
     @Override
@@ -78,30 +77,7 @@ public class AddSiteMembers extends AppCompatActivity {
         sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE );
         //membersList = findViewById( R.id.membersList );
         add = findViewById( R.id.addMember );
-        site_name = findViewById( R.id.name );
-        siteLoc = findViewById( R.id.Location );
-        sitestart = findViewById( R.id.startDate );
-        sitePriority = findViewById( R.id.Priority );
 
-        //get the details of the site in the fields
-        newRef = FirebaseDatabase.getInstance().getReference( "/Site Details/" + sp.getString( ID, "" ) + "/" );
-        newRef.addValueEventListener( new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    Site site = dataSnapshot.getValue( Site.class );
-                    site_name.setText( site.getName() );
-                    siteLoc.setText( site.getSiteLoc() );
-                    sitestart.setText( site.getStart() );
-                    sitePriority.setText( site.getPriority() );
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        } );
         //get user name from firebase and add
         members = new ArrayList<>();
         sitesMembers = new ArrayList<>();
@@ -114,22 +90,8 @@ public class AddSiteMembers extends AppCompatActivity {
         if (!Objects.requireNonNull( sp.getString( Priority, "" ) ).matches( "High" )) {
             sp.getString( Priority, "" ).matches( "Medium" );
         }
-        adapter = new ArrayAdapter<>( getApplicationContext(), android.R.layout.simple_list_item_1, members );
-        //membersList.setAdapter( adapter );
 
-        /*membersList.setOnItemClickListener( new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                createDIalog( sitesMembers.get( position ) );
-            }
-        } );*/
-        add.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity( new Intent( getApplicationContext(), search.class ) );
-
-            }
-        } );
+        add.setOnClickListener( v -> startActivity( new Intent( getApplicationContext(), search.class ) ) );
     }
 
     private void populateList() {
@@ -147,27 +109,12 @@ public class AddSiteMembers extends AppCompatActivity {
         recyclerView.setLayoutManager( linearLayoutManager );
         FirebaseRecyclerOptions<SIteMembers> options =
                 new FirebaseRecyclerOptions.Builder<SIteMembers>()
-                        .setQuery( query, /*new SnapshotParser<SIteMembers>() {
-                            @NonNull
-                            @Override
-                            public SIteMembers parseSnapshot( DataSnapshot snapshot) {
-                                if (snapshot != null) {
-
-                                    Log.e( "msg",snapshot.child( "name" ).getValue().toString());
-                                    return new SIteMembers( snapshot.child( "name" ).getValue().toString(),
-                                            snapshot.child( "designation" ).getValue().toString(),
-                                            snapshot.child( "imgUrl" ).getValue().toString() );
-                                }
-                                else{
-                                    return null;
-                                }
-                            }
-                        } */SIteMembers.class )
+                        .setQuery( query, SIteMembers.class )
                         .build();
-        adapter1 = new FirebaseRecyclerAdapter<SIteMembers, SearchHolders>( options ) {
+        adapter1 = new FirebaseRecyclerAdapter<SIteMembers, ViewHolder>( options ) {
 
             @Override
-            protected void onBindViewHolder(@NonNull SearchHolders holder, int position, @NonNull SIteMembers model) {
+            protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull SIteMembers model) {
                 Log.e("msg","entered here ");
                 Log.e("msg",model.getDesignation());
                 holder.setImg( model.getImgUrl() );
@@ -184,13 +131,13 @@ public class AddSiteMembers extends AppCompatActivity {
 
             @NonNull
             @Override
-            public SearchHolders onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder, in this case we are using a custom
                 // layout called R.layout.message for each item
                 View view = LayoutInflater.from( parent.getContext() )
                         .inflate( R.layout.list_tems, parent, false );
 
-                return new SearchHolders( view );
+                return new ViewHolder( view );
             }
 
 
@@ -198,96 +145,6 @@ public class AddSiteMembers extends AppCompatActivity {
 
         recyclerView.setAdapter( adapter1 );
 
-
-
-         /*   value= newRef.addValueEventListener( new ValueEventListener() {
-             @Override
-             public void onDataChange( DataSnapshot dataSnapshot) {
-                 if (dataSnapshot != null) {
-                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                         SIteMembers site = snapshot.getValue( SIteMembers.class );
-                         String memebr = "Name: " + site.getName() + "\n" +
-                                 "Priority: " + site.getPriority();
-                         members.add( memebr );
-                         sitesMembers.add( site );
-
-                         adapter.notifyDataSetChanged();
-                     }
-                     ListAdapter listadp = membersList.getAdapter();
-                     if (listadp != null) {
-                         int totalHeight = 0;
-                         for (int i = 0; i < listadp.getCount(); i++) {
-                             View listItem = listadp.getView( i, null, membersList );
-                             listItem.measure( 0, 0 );
-                             totalHeight += listItem.getMeasuredHeight();
-                         }
-                         ViewGroup.LayoutParams params = membersList.getLayoutParams();
-                         params.height = totalHeight + (membersList.getDividerHeight() * (listadp.getCount() - 1));
-
-                         if (totalHeight < pixels) {
-                             membersList.setLayoutParams( params );
-                             membersList.requestLayout();
-                         } else {
-                             params.height = pixels;
-                             membersList.setLayoutParams( params );
-                             membersList.requestLayout();
-
-                         }
-                     }
-                 }
-             }
-
-             @Override
-             public void onCancelled(@NonNull DatabaseError databaseError) {
-
-             }
-         } );*/
-
-
-    }
-    public class SearchHolders  extends RecyclerView.ViewHolder  {
-        RelativeLayout root;
-        TextView txtTitle;
-        TextView txtDesc;
-        ImageView img;
-
-        public SearchHolders(View itemView) {
-            super(itemView);
-            root = itemView.findViewById( R.id.list_root);
-            txtTitle = itemView.findViewById(R.id.list_title);
-            txtDesc = itemView.findViewById(R.id.list_desc);
-            img=itemView.findViewById( R.id.image );
-            //Log.e( "msg","initation" );
-
-        }
-
-
-        public void setImg(String url){
-
-            int pxw = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
-            int pxh = (int) (80 * Resources.getSystem().getDisplayMetrics().density);
-
-            Picasso.get().load(url ).resize(pxw,pxh).transform(new Constants.CircleTransform()).into( img, new Callback() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    e.printStackTrace();
-                }
-            } );
-
-        }
-        public void setTxtTitle(String string) {
-            txtTitle.setText(string);
-        }
-
-
-        public void setTxtDesc(String string) {
-            txtDesc.setText(string);
-        }
     }
     private void createDIalog(SIteMembers members){
         AlertDialog.Builder builder=new AlertDialog.Builder( AddSiteMembers.this );
@@ -299,10 +156,14 @@ public class AddSiteMembers extends AppCompatActivity {
                     SharedPreferences sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE);
                     DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + sp.getString( ID, "" ) + members.getId() );
 
+
+
                     //chnage the priority some way after creating view for the same
                     SIteMembers sIteMembers=new SIteMembers( members.getId(),members.getName(),"Low",members.getDesignation(),sp.getString( SiteNAme,"" ),ongoing,members.getImgUrl());
                     newRef.setValue( sIteMembers ).addOnFailureListener( e ->
                             Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show() );
+
+
 
                     UserSite siteUser=new UserSite( sp.getString( Constants.ID, "") , ongoing,sp.getString( SiteNAme,"" ));
                     DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Users/"+members.getId()+"/Sites Added/"+sp.getString( Constants.ID, "")+"/");
@@ -336,7 +197,7 @@ public class AddSiteMembers extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
+        startActivity( new Intent( getApplicationContext(),mainMenu.class ) );
     }
 
     @Override

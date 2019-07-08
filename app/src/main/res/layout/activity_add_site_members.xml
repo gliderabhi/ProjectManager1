@@ -14,92 +14,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="30dp"
             android:layout_margin="15dp">
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/nameText"
-                android:text="Site Name: "
-                android:textSize="18dp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/name"
-                android:text="Site Name "
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/nameText"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/LocationText"
-                android:text="Site Location: "
-                android:layout_below="@+id/nameText"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/Location"
-                android:layout_below="@+id/nameText"
-                android:text="Site loc "
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/nameText"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/StartDateText"
-                android:text="Start Date: "
-                android:layout_below="@+id/LocationText"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/startDate"
-                android:layout_below="@+id/LocationText"
-                android:text="Site date "
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/nameText"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/PriorityTxt"
-                android:text="Site Priority: "
-                android:layout_below="@+id/StartDateText"
-                android:textSize="18dp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/Priority"
-                android:layout_below="@+id/StartDateText"
-                android:text="Site priority "
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/nameText"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="20dp"
-                android:background="@android:color/darker_gray"
-                android:layout_below="@+id/PriorityTxt"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +22,6 @@
                 android:textColor="#000"
                 android:text="The members included in the site are : "
                 android:textSize="18sp"
-                android:layout_below="@+id/PriorityTxt"
                 android:layout_marginTop="30dp"/>
 
             <android.support.v7.widget.RecyclerView

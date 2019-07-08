@@ -33,6 +33,7 @@ public class Constants {
     public static String Locale="locale";
     public static String Male="Male";
     public static String Female="Female";
+    public static String SITE_NAME = "SITE_NAME";
 
     public static class CircleTransform implements Transformation {
         @Override

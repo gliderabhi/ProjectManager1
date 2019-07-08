@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,14 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectmanager.Classes.Constants;
-import com.example.projectmanager.Classes.SIteMembers;
-import com.example.projectmanager.Classes.Site;
-import com.example.projectmanager.Classes.Suppliers;
 import com.example.projectmanager.Classes.UserSite;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,8 +39,6 @@ import java.util.List;
 
 import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
-import static com.example.projectmanager.Classes.Constants.Priority;
-import static com.example.projectmanager.Classes.Constants.SiteNAme;
 
 public class SitesList extends Activity {
 
@@ -89,15 +81,9 @@ public class SitesList extends Activity {
         ongoing.setAdapter( adapter1 );
         completed.setAdapter( adapter2 );
 
-        ongoing.setOnItemClickListener( new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> adapter, View v, int position,
-                                    long arg3)
-            {
+        ongoing.setOnItemClickListener( (adapter, v, position, arg3) -> {
 
-            }
-        });
+        } );
 
         populateLists();
     }
@@ -129,7 +115,7 @@ public class SitesList extends Activity {
                         id = usr.getId();
                         String prgs = usr.getProgress();
 
-                        //Log.e( "msg", prgs + " " + site_name );
+                        //Log.e( "msg", prgs + " " + id );
                         if (prgs.matches( Constants.ongoing )) {
                             idListOn.add( id );
                             onGoing.add( onGoing.size() + 1 + ": " + site_name );
@@ -162,13 +148,10 @@ public class SitesList extends Activity {
                             }
                             ongoing.setVisibility( View.VISIBLE );
                             one.setVisibility( View.GONE );
-                            ongoing.setOnItemClickListener( new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
-                                    editor.putString( ID, idListOn.get( position ) );
-                                    editor.apply();
-                                    startActivity( new Intent( getApplicationContext(), AddSiteMembers.class ) );
-                                }
+                            ongoing.setOnItemClickListener( (parent, view, position, ids) -> {
+                                editor.putString( ID, idListOn.get( position ) );
+                                editor.apply();
+                                startActivity( new Intent( getApplicationContext(), mainMenu.class ) );
                             } );
                         }
                     } else {
@@ -206,7 +189,7 @@ public class SitesList extends Activity {
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
                                     editor.putString( ID, idListComp.get( position ) );
                                     editor.apply();
-                                    startActivity( new Intent( getApplicationContext(), AddSiteMembers.class ) );
+                                    startActivity( new Intent( getApplicationContext(), mainMenu.class ) );
                                 }
                             } );
                         }

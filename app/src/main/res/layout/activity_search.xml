@@ -22,18 +22,18 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:id="@+id/searchBar"
+              android:inputType="textShortMessage"
               android:layout_marginEnd="20dp"/>
     </LinearLayout>
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/topBar"
-        android:layout_margin="10dp"
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="NO results"
+        android:id="@+id/noResultText"
         android:visibility="gone"
-        android:id="@+id/searchResult">
-
-    </ListView>
-
+        android:textSize="18dp"/>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_below="@+id/topBar"

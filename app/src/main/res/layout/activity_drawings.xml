@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Drawings">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Available Drawings "
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:padding="10dp"
+                android:textSize="18dp"
+                android:textColor="#000"
+                android:id="@+id/headerTop"/>
+
+            <android.support.v7.widget.RecyclerView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/drawingList"
+                android:layout_marginTop="30dp"
+               android:layout_below="@+id/headerTop">
+
+           </android.support.v7.widget.RecyclerView>
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/drawingList"
+                android:layout_marginTop="30dp"
+                android:id="@+id/drawingImg"
+                android:src="@drawable/drawing"
+                android:visibility="gone"
+                android:layout_marginBottom="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/drawingImg"
+                android:text="Title"
+                android:visibility="gone"
+                android:layout_marginTop="20dp"
+                android:textSize="18dp"
+                android:id="@+id/titleText"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/titleText"
+                android:text="Description "
+                android:visibility="gone"
+                android:textSize="18dp"
+                android:layout_marginBottom="30dp"
+                android:id="@+id/DescriptionText"
+                />
+        </RelativeLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/floatBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="40dp"
+        />
+</RelativeLayout>
