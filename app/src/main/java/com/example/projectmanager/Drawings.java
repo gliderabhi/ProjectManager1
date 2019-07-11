@@ -3,6 +3,7 @@ package com.example.projectmanager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,10 +28,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.squareup.picasso.Picasso;
-
-import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+import static com.example.projectmanager.Classes.Constants.SiteID;
 
 public class Drawings extends AppCompatActivity {
 
@@ -60,7 +60,7 @@ public class Drawings extends AppCompatActivity {
     private void getList(){
         linearLayoutManager = new LinearLayoutManager( this );
         recyclerView.setLayoutManager( linearLayoutManager );
-        DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/SiteDrawings/" + sp.getString( ID, "" ) );
+        DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/SiteDrawings/" + sp.getString( SiteID, "" ) );
 
         Query query = newRef.orderByChild( "title" );
 
@@ -76,22 +76,32 @@ public class Drawings extends AppCompatActivity {
                     holder.setImg( drawingsDetails.getPicUrl() );
                     //Log.e("msg",usr.getImageUrl());
                 }
-                holder.setTxtDesc( drawingsDetails.getTitle() + "."+ drawingsDetails.getType() );
+                holder.setTxtDesc( drawingsDetails.getTitle() + "\n"+ drawingsDetails.getType() );
                 holder.setTxtTitle( drawingsDetails.getRemarks() );
 
                 holder.root.setOnClickListener( v -> {
-                    if(drawingsDetails.getPicUrl()!=null){
-                        if(!drawingsDetails.getPicUrl().matches( "" )){
-                            Picasso.get().load( drawingsDetails.getPicUrl() ).fit().into( drawwings );
-                        }
-                    }
-                    title.setText( drawingsDetails.getTitle() );
-                    desc.setText( drawingsDetails.getRemarks() );
+                    String type = drawingsDetails.getType();
+                    if (type.matches( "application/pdf" )) {
 
-                    drawwings.setVisibility( View.VISIBLE );
-                    title.setVisibility( View.VISIBLE );
-                    desc.setVisibility( View.VISIBLE );
-                } );
+
+
+                      } else {
+                        if (drawingsDetails.getPicUrl() != null) {
+                            if (!drawingsDetails.getPicUrl().matches( "" )) {
+                                //Picasso.get().load( drawingsDetails.getPicUrl() ).fit().into( drawwings );
+                                startActivity( new Intent( Intent.ACTION_VIEW, Uri.parse( drawingsDetails.getPicUrl() ) ) );
+                                /* replace with your own uri */
+
+                            }
+                        }
+                        title.setText( drawingsDetails.getTitle() );
+                        desc.setText( drawingsDetails.getRemarks() );
+
+                        drawwings.setVisibility( View.VISIBLE );
+                        title.setVisibility( View.VISIBLE );
+                        desc.setVisibility( View.VISIBLE );
+                    }
+                });
 
                 holder.root.setOnLongClickListener( v -> false );
             }
@@ -107,16 +117,7 @@ public class Drawings extends AppCompatActivity {
         };
       recyclerView.setAdapter( adapter1 );
     }
-
-    private void signout() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener( task -> {
-                    Toast.makeText(Drawings.this, "User Signed Out", Toast.LENGTH_SHORT).show();
-                    finish();
-                } );
-    }
-    @Override
+  @Override
     protected void onDestroy() {
         super.onDestroy();
         recyclerView.setAdapter( null);
@@ -134,7 +135,14 @@ public class Drawings extends AppCompatActivity {
         super.onStart();
         adapter1.startListening();
     }
-
+    private void signout() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener( task -> {
+                    Toast.makeText(Drawings.this, "User Signed Out", Toast.LENGTH_SHORT).show();
+                    finish();
+                } );
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -14,8 +14,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+import static com.example.projectmanager.Classes.Constants.SiteID;
 
 public class siteDetails extends AppCompatActivity {
 
@@ -37,7 +37,7 @@ public class siteDetails extends AppCompatActivity {
         sitePriority = findViewById( R.id.Priority );
 
         //get the details of the site in the fields
-        newRef = FirebaseDatabase.getInstance().getReference( "/Site Details/" + sp.getString( ID, "" ) + "/" );
+        newRef = FirebaseDatabase.getInstance().getReference( "/Site Details/" + sp.getString( SiteID, "" ) + "/" );
         newRef.addValueEventListener( new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

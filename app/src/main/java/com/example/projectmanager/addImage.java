@@ -4,35 +4,33 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectmanager.Classes.DrawingsDetails;
-import com.example.projectmanager.Classes.SIteMembers;
-import com.example.projectmanager.Classes.UserDetails;
-import com.example.projectmanager.Classes.UserSite;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
-import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
-import static com.example.projectmanager.Classes.Constants.SiteNAme;
-import static com.example.projectmanager.Classes.Constants.ongoing;
+import static com.example.projectmanager.Classes.Constants.SiteID;
 
 public class addImage extends AppCompatActivity {
 
     private EditText title,remarks;
+    private TextView name;
     private ImageView buttonAdd,previewImg;
     private int PICK_IMAGE_REQUEST=1;
     private Uri mImageUri;
@@ -40,6 +38,7 @@ public class addImage extends AppCompatActivity {
     private ProgressDialog progress;
     private String picUrl,type;
     private SharedPreferences sp;
+    private Button upload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,12 @@ public class addImage extends AppCompatActivity {
         remarks=findViewById( R.id.remarks );
         buttonAdd=findViewById( R.id.imageSelect );
         previewImg=findViewById( R.id. previewImage);
+        upload= findViewById( R.id.upload );
+        name= findViewById( R.id.FileName );
 
+        upload.setOnClickListener( v ->{
+            updateDataBase();
+        } );
         buttonAdd.setOnClickListener( v -> {
             selectImage();
         } );
@@ -65,6 +69,27 @@ public class addImage extends AppCompatActivity {
         intent.setAction( Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex( OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -72,27 +97,25 @@ public class addImage extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
-             type = MimeTypeMap.getFileExtensionFromUrl(mImageUri.toString());
-            Picasso.get()
-                    .load(mImageUri)
-                    .fit()
-                    .into( previewImg, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            updateDataBase();
-                        }
+            buttonAdd.setVisibility( View.GONE );
+            name.setVisibility( View.VISIBLE );
+            name.setText(getFileName( mImageUri ));
 
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    } );
-            previewImg.setVisibility( View.VISIBLE );
+            Log.e( "msg", mImageUri.toString() );
+            type = getContentResolver().getType( mImageUri );
+            if (!type.matches( "application/pdf" ) || type.matches( "application/jpeg" ) || type.matches( "application/png" )) {
+                Log.e( "msg", type );
+                Picasso.get()
+                        .load( mImageUri )
+                        .fit()
+                        .into( previewImg);
+                previewImg.setVisibility( View.VISIBLE );
+            }
         }
     }
 
     private void uploadImage() {
-        mStorageRef = FirebaseStorage.getInstance().getReference("/Sites/Drawings/"+ sp.getString( ID, "" ));
+        mStorageRef = FirebaseStorage.getInstance().getReference("/Sites/Drawings/"+ sp.getString( SiteID, "" ) + "/"+ title.getText());
         progress = new ProgressDialog(this);
         progress.setMessage("Uploading Image");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -110,7 +133,7 @@ public class addImage extends AppCompatActivity {
                             if(!title.getText().toString().matches( "" )){
                                 if(remarks.getText().toString()!=null ){
                                     if(!remarks.getText().toString().matches( "" )){
-                                        DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/SiteDrawings/" + sp.getString( ID, "" ) + "/"+ title.getText().toString());
+                                        DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/SiteDrawings/" + sp.getString( SiteID, "" ) + "/"+ title.getText().toString());
 
                                         DrawingsDetails drawingsDetails=new DrawingsDetails( title.getText().toString(),remarks.getText().toString(),picUrl,type );
                                         newRef.setValue( drawingsDetails ).addOnFailureListener( e ->

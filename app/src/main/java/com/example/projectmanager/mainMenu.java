@@ -22,7 +22,7 @@ public class mainMenu extends AppCompatActivity {
             case R.id.img1: startActivity( new Intent( getApplicationContext(), siteDetails.class ) ); break;
             case R.id.img2: startActivity( new Intent( getApplicationContext(), Attendance.class ) ); break;
             case R.id.img3: startActivity( new Intent( getApplicationContext(), MaterialsSupply.class ) ); break;
-            //case R.id.img4: startActivity( new Intent( getApplicationContext(), Ledger.class ) ); break;
+            case R.id.img4: startActivity( new Intent( getApplicationContext(), Materials.class ) ); break;
             case R.id.img5: startActivity( new Intent( getApplicationContext(), AddSiteMembers.class ) ); break;
             case R.id.img6: startActivity( new Intent( getApplicationContext(), Drawings.class ) ); break;
 

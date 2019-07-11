@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/tablepickup"
+    android:clickable="true"
+    android:shrinkColumns="*"
+    android:stretchColumns="*">
+
+
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView1"
+            android:gravity="center"
+            android:text="Items"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:typeface="normal" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/TextView2"
+            android:gravity="center"
+            android:text="Address"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:typeface="normal" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/TextView3"
+            android:gravity="center"
+            android:text="PickBy"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:typeface="normal" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/TextView4"
+            android:gravity="center"
+            android:text="Status"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:typeface="normal" >
+
+        </TextView>
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+
+
+        <TextView
+            android:id="@+id/textView6"
+            android:gravity="center_horizontal"
+            android:text="Dairy Milk" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:gravity="center_horizontal"
+            android:text="18,D.H.Rd" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView8"
+            android:gravity="center_horizontal"
+            android:text="Sushil" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:gravity="center_horizontal"
+            android:text="Picked" >
+        </TextView>
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+
+
+        <TextView
+            android:id="@+id/textView11"
+            android:gravity="center_horizontal"
+            android:text="Bournville" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView12"
+            android:gravity="center_horizontal"
+            android:text="EC5,Sec1" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView13"
+            android:gravity="center_horizontal"
+            android:text="Hemant" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView14"
+            android:gravity="center_horizontal"
+            android:text="Picked" >
+        </TextView>
+    </TableRow>
+    <TableRow
+        android:id="@+id/tableRow5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+
+
+        <TextView
+            android:id="@+id/textView15"
+            android:gravity="center_horizontal"
+            android:text="Gems" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView16"
+            android:gravity="center_horizontal"
+            android:text="AP5,Sec5" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView17"
+            android:gravity="center_horizontal"
+            android:text="Suresh" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView18"
+            android:gravity="center_horizontal"
+            android:text="Pending" >
+        </TextView>
+    </TableRow>
+</TableLayout>

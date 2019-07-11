@@ -1,10 +1,8 @@
 package com.example.projectmanager;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,14 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.SIteMembers;
 import com.example.projectmanager.Classes.UserDetails;
 import com.example.projectmanager.Classes.UserSite;
@@ -35,18 +28,12 @@ import com.example.projectmanager.Classes.ViewHolder;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
-import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+import static com.example.projectmanager.Classes.Constants.SiteID;
 import static com.example.projectmanager.Classes.Constants.SiteNAme;
 import static com.example.projectmanager.Classes.Constants.hideSoftKeyboard;
 import static com.example.projectmanager.Classes.Constants.ongoing;
@@ -168,7 +155,7 @@ getSiteName();
                 .setPositiveButton( " ok ", (dialog, id) -> {
 
 
-                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + sp.getString( ID, "" ) +"/"+ userDetails.getId() );
+                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + sp.getString( SiteID, "" ) +"/"+ userDetails.getId() );
 
 
                     //define the priority some way after creating view for the same
@@ -180,8 +167,8 @@ getSiteName();
 
 
                     //add the site to the added persons database also
-                    DatabaseReference addedRef = FirebaseDatabase.getInstance().getReference( "/Sites/" + userDetails.getId() +"/Sites Added/"+ sp.getString( ID,"" )+"/" );
-                    UserSite userSite=new UserSite(sp.getString( ID, "" ) , ongoing, getSiteName());
+                    DatabaseReference addedRef = FirebaseDatabase.getInstance().getReference( "/Sites/" + userDetails.getId() +"/Sites Added/"+ sp.getString( SiteID,"" )+"/" );
+                    UserSite userSite=new UserSite(sp.getString( SiteID, "" ) , ongoing, getSiteName());
                     addedRef.setValue( userSite );
                     startActivity( new Intent( getApplicationContext(),AddSiteMembers.class ) );
                 } )
@@ -198,7 +185,7 @@ getSiteName();
 
     private String getSiteName(){
 
-       String name = sp.getString( ID , "");
+       String name = sp.getString( SiteID , "");
         int i= name.indexOf( "_" );
         String ret= name.substring( i +1);
         Log.e( "msg",ret );

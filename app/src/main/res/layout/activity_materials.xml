@@ -33,6 +33,7 @@
                     android:layout_width="100dp"
                     android:text="Site name "
                     android:textSize="18dp"
+                    android:gravity="center"
                     android:layout_height="wrap_content" />
 
                 <EditText
@@ -50,6 +51,7 @@
                 <TextView
                     android:layout_width="100dp"
                     android:text="From : "
+                    android:gravity="center"
                     android:textSize="18dp"
                     android:layout_height="wrap_content" />
                 <EditText
@@ -57,72 +59,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/fromName"/>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/l3"
-                android:layout_below="@+id/l2"
-                >
-                <TextView
-                    android:layout_width="40dp"
-                    android:text="SNo. "
-                    android:layout_height="wrap_content"
-                    android:padding="3dp"/>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="fill_parent"
-                    android:background="#000" />
-                <TextView
-                    android:layout_width="70dp"
-                    android:padding="5dp"
-                    android:layout_height="wrap_content"
-                    android:text="Name "/>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="fill_parent"
-                    android:background="#000" />
-                <TextView
-                    android:layout_width="70dp"
-                    android:padding="5dp"
-                    android:layout_height="wrap_content"
-                    android:text="Quantity "/>
-                <View
-                android:layout_width="1dp"
-                android:layout_height="fill_parent"
-                android:background="#000" />
-                <TextView
-                    android:layout_width="70dp"
-                    android:padding="5dp"
-                    android:layout_height="wrap_content"
-                    android:text="Unit "/>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="fill_parent"
-                    android:background="#000" />
-                <TextView
-                    android:layout_width="70dp"
-                    android:padding="5dp"
-                    android:layout_height="wrap_content"
-                    android:text="Rate "/>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="fill_parent"
-                    android:background="#000" />
-                <TextView
-                    android:layout_width="70dp"
-                    android:padding="5dp"
-                    android:layout_height="wrap_content"
-                    android:text="Amount "/>
-            </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/recylerAmount"
-                android:layout_below="@+id/l3"
-                android:layout_marginTop="20dp"
-                ></android.support.v7.widget.RecyclerView>
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,42 +17,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.SIteMembers;
-import com.example.projectmanager.Classes.Site;
 import com.example.projectmanager.Classes.UserSite;
 import com.example.projectmanager.Classes.ViewHolder;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.Objects;
-
-import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
 import static com.example.projectmanager.Classes.Constants.Priority;
+import static com.example.projectmanager.Classes.Constants.SiteID;
 import static com.example.projectmanager.Classes.Constants.SiteNAme;
+import static com.example.projectmanager.Classes.Constants.UserID;
 import static com.example.projectmanager.Classes.Constants.ongoing;
 
 public class AddSiteMembers extends AppCompatActivity {
@@ -101,7 +88,7 @@ public class AddSiteMembers extends AppCompatActivity {
 
         members.clear();
         sitesMembers.clear();
-        newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + sp.getString( ID, "" ) );
+        newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + sp.getString( SiteID, "" ) );
         Query query = newRef.limitToLast( 30 );
 
         recyclerView = findViewById( R.id.membersList );
@@ -154,30 +141,28 @@ public class AddSiteMembers extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton( " ok ", (dialog, id) -> {
                     SharedPreferences sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE);
-                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + sp.getString( ID, "" ) + members.getId() );
+                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + sp.getString( SiteID, "" ) + members.getId() );
 
 
 
                     //chnage the priority some way after creating view for the same
                     SIteMembers sIteMembers=new SIteMembers( members.getId(),members.getName(),"Low",members.getDesignation(),sp.getString( SiteNAme,"" ),ongoing,members.getImgUrl());
                     newRef.setValue( sIteMembers ).addOnFailureListener( e ->
-                            Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show() );
+                            Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage(),Toast.LENGTH_LONG ).show() );
 
 
 
-                    UserSite siteUser=new UserSite( sp.getString( Constants.ID, "") , ongoing,sp.getString( SiteNAme,"" ));
-                    DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Users/"+members.getId()+"/Sites Added/"+sp.getString( Constants.ID, "")+"/");
+                    UserSite siteUser=new UserSite( sp.getString( SiteID, "") , ongoing,sp.getString( SiteNAme,"" ));
+                    DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Users/"+members.getId()+"/Sites Added/"+sp.getString( UserID, "")+"/");
                     siteRef.setValue( siteUser ).addOnFailureListener( e ->
-                            Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show()   );
+                            Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage(),Toast.LENGTH_LONG ).show()   );
 
                     startActivity( new Intent( getApplicationContext(),AddSiteMembers.class ) );
                 } )
-                .setNegativeButton( "cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //  Action for 'NO' Button
-                        dialog.cancel();
-                    }
-                });
+                .setNegativeButton( "cancel", (dialog, id) -> {
+                    //  Action for 'NO' Button
+                    dialog.cancel();
+                } );
         //Creating dialog box
         AlertDialog alert = builder.create();
         //Setting the title manually

@@ -31,14 +31,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+import static com.example.projectmanager.Classes.Constants.SiteID;
 
 public class SitesList extends Activity {
 
@@ -149,7 +146,7 @@ public class SitesList extends Activity {
                             ongoing.setVisibility( View.VISIBLE );
                             one.setVisibility( View.GONE );
                             ongoing.setOnItemClickListener( (parent, view, position, ids) -> {
-                                editor.putString( ID, idListOn.get( position ) );
+                                editor.putString( SiteID, idListOn.get( position ) );
                                 editor.apply();
                                 startActivity( new Intent( getApplicationContext(), mainMenu.class ) );
                             } );
@@ -187,7 +184,7 @@ public class SitesList extends Activity {
                             completed.setOnItemClickListener( new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
-                                    editor.putString( ID, idListComp.get( position ) );
+                                    editor.putString( SiteID, idListComp.get( position ) );
                                     editor.apply();
                                     startActivity( new Intent( getApplicationContext(), mainMenu.class ) );
                                 }

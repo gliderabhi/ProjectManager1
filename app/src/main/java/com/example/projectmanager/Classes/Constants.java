@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.squareup.picasso.Transformation;
@@ -17,7 +18,8 @@ public class Constants {
     public static final String VIEW ="View" ;
     public static String Msg="Message";
     public static String Pref= "MyPref";
-    public static String ID= "ID";
+    public static String UserID= "UserID";
+    public static String SiteID= "SiteID";
     public static String Designation= "Designation";
     public static String Org= "Organisation";
     public static String Completed="Completed";
@@ -73,6 +75,9 @@ public class Constants {
     public static String mapStr1= "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=";
     public static String mapStr2= "&types=geocode&language=fr&key=AIzaSyCyo9NTN6KV4Oo-n-CcSsfiAQ1-5fSZEME";
 
+    public static float getPixel(int dp, Context context){
+        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
     public static void hideSoftKeyboard(Activity act){
         act.getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }

@@ -46,6 +46,8 @@ import static com.example.projectmanager.Classes.Constants.KEY_LATITUDE;
 import static com.example.projectmanager.Classes.Constants.KEY_LONGITUDE;
 import static com.example.projectmanager.Classes.Constants.Locale;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+import static com.example.projectmanager.Classes.Constants.SiteID;
+import static com.example.projectmanager.Classes.Constants.SiteNAme;
 import static com.example.projectmanager.Classes.Constants.hideSoftKeyboard;
 import static com.example.projectmanager.Classes.Constants.mapStr1;
 import static com.example.projectmanager.Classes.Constants.mapStr2;
@@ -169,69 +171,61 @@ public class NewSite extends AppCompatActivity {
                sitePrior="";
             }
         } );
-        cancel.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity( new Intent( getApplicationContext(),SitesList.class ) );
-            }
-        } );
-        proceed.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cancel.setOnClickListener( v -> startActivity( new Intent( getApplicationContext(),SitesList.class ) ) );
+        proceed.setOnClickListener( v -> {
 
-                if(startDate!=null ){
-                    if(!sitePrior.matches( "" ) || sitePrior!=null){
+            if(startDate!=null ){
+                if(!sitePrior.matches( "" ) || sitePrior!=null){
 
-                        site_name=siteName.getText().toString().trim();
-                        //site_loc=siteLoc.getText().toString().trim();
-                        site_client=siteCLient.getText().toString().trim();
-                        id= startDate+"_"+site_name;
-                        Log.e( "msg",site_loc );
-                        if(site_loc.matches( "00" )){
-                            AlertDialog.Builder builder=new AlertDialog.Builder( NewSite.this );
-                            builder.setMessage( "Please add the site location " )
-                                    .setPositiveButton( "Yes", (dialog, which) -> {
-                                        startActivity( new Intent( getApplicationContext(),MapsActivity.class ) );
-                                        site_loc=pref.getString( KEY_LATITUDE,"0" ) + "/"+ pref.getString( KEY_LONGITUDE,"0" );
-                                    } )
-                                    .setNegativeButton( "No", (dialog, which) -> {
-                                        site_loc=site_loc;
-                                    } );
-                            builder.create();
-                            builder.show();
-                        }
-                        Site site=new Site( site_name,site_client,site_loc,sitePrior,startDate,"End date can be specified its optional", site_client, Constants.ongoing ,id);
-
-                        SiteRef = dataRef.child("/Site Details/"+id+"/");
-                        SiteRef.setValue( site ).addOnFailureListener( new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                e.printStackTrace();
-                            }
-                        } );
-                        DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + id+"/" + user.getUid() );
-                        SIteMembers members=new SIteMembers( user.getUid(),site_client,"High" ,Creator,site_name,ongoing,getImageUrl(id));
-                        newRef.setValue( members ).addOnFailureListener( e -> e.printStackTrace() );
-
-                        UserSite siteUser=new UserSite(id ,ongoing,site_name);
-                        DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Sites/"+members.getId()+"/Sites Added/"+id+"/");
-                        siteRef.setValue( siteUser ).addOnFailureListener( e ->
-                                Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show()   );
-
-                        startActivity(new Intent( getApplicationContext(),AddSiteMembers.class ) );
-                    }else{
-                        createDIalog();
+                    site_name=siteName.getText().toString().trim();
+                    //site_loc=siteLoc.getText().toString().trim();
+                    site_client=siteCLient.getText().toString().trim();
+                    id= startDate+"_"+site_name;
+                    Log.e( "msg",site_loc );
+                    if(site_loc.matches( "00" )){
+                        AlertDialog.Builder builder=new AlertDialog.Builder( NewSite.this );
+                        builder.setMessage( "Please add the site location " )
+                                .setPositiveButton( "Yes", (dialog, which) -> {
+                                    startActivity( new Intent( getApplicationContext(),MapsActivity.class ) );
+                                    site_loc=pref.getString( KEY_LATITUDE,"0" ) + "/"+ pref.getString( KEY_LONGITUDE,"0" );
+                                } )
+                                .setNegativeButton( "No", (dialog, which) -> {
+                                    site_loc=site_loc;
+                                } );
+                        builder.create();
+                        builder.show();
                     }
-                }else {
+                    Site site=new Site( site_name,site_client,site_loc,sitePrior,startDate,"End date can be specified its optional", site_client, Constants.ongoing ,id);
+
+                    SiteRef = dataRef.child("/Site Details/"+id+"/");
+                    SiteRef.setValue( site ).addOnFailureListener( new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                        }
+                    } );
+                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference( "/Site Members/" + id+"/" + user.getUid() );
+                    SIteMembers members=new SIteMembers( user.getUid(),site_client,"High" ,Creator,site_name,ongoing,getImageUrl(id));
+                    newRef.setValue( members ).addOnFailureListener( e -> e.printStackTrace() );
+
+                    UserSite siteUser=new UserSite(id ,ongoing,site_name);
+                    DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Sites/"+members.getId()+"/Sites Added/"+id+"/");
+                    siteRef.setValue( siteUser ).addOnFailureListener( e ->
+                            Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show()   );
+
+                    startActivity(new Intent( getApplicationContext(),AddSiteMembers.class ) );
+                }else{
                     createDIalog();
                 }
-
-                SharedPreferences sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor=sp.edit();
-                editor.putString( Constants.SiteNAme,site_name  );
-                editor.putString( Constants.ID,id );
-                editor.apply();
+            }else {
+                createDIalog();
             }
+
+            SharedPreferences sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor=sp.edit();
+            editor.putString( SiteNAme,site_name  );
+            editor.putString( SiteID,id );
+            editor.apply();
         } );
 
     }

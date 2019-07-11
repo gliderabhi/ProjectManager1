@@ -31,6 +31,8 @@
         android:layout_centerHorizontal="true"
         android:text="@string/select_a_profile_pic"
         android:layout_marginTop="10dp"
+        android:padding="4dp"
+        android:gravity="center"
         android:layout_below="@+id/iconGroup"
         />
     <ImageView
@@ -69,6 +71,7 @@
            android:layout_width="100dp"
            android:layout_height="wrap_content"
            android:padding="10dp"
+           android:gravity="center"
            android:text="@string/name" />
         <EditText
             android:layout_width="250dp"
@@ -89,12 +92,14 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:gravity="center"
             android:text="@string/address" />
         <TextView
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Profile loc "
             android:padding="4dp"
+            android:gravity="center"
             android:textSize="16dp"
             android:id="@+id/AddressEdit"
             />
@@ -119,6 +124,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Sex "
+            android:gravity="center"
             android:padding="4dp"
             android:textSize="16dp"
             android:id="@+id/sexEdit"
@@ -171,6 +177,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:gravity="center"
             android:text="@string/mobile_no" />
         <EditText
             android:layout_width="250dp"
@@ -237,6 +244,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:gravity="center"
             android:id="@+id/text1"
             android:text="@string/i_am" />
         <Spinner
@@ -268,6 +276,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:id="@+id/text2"
+            android:gravity="center"
             android:layout_centerVertical="true"
             android:text="@string/i_have_an_organisation" />
         <Spinner
@@ -296,6 +305,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
+                    android:padding="4dp"
+                    android:gravity="center"
                     android:text="@string/user_account_details"
                     android:id="@+id/accDet"/>
                 <LinearLayout
@@ -312,6 +323,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/a_c_holder_name"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -333,6 +345,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/a_c_number"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -355,6 +368,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/ifsc_code"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -376,6 +390,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/name_of_bank"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -397,6 +412,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/bank_branch"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -423,6 +439,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
+            android:gravity="center"
+            android:padding="4dp"
             android:text="@string/organisation_details"
             android:id="@+id/textHead"/>
         <LinearLayout
@@ -439,6 +457,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/name_of_company"
+            android:gravity="center"
             android:padding="10dp"/>
         <EditText
             android:layout_width="250dp"
@@ -460,6 +479,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="@string/address_of_company"
+                android:gravity="center"
                 android:padding="10dp"/>
             <EditText
                 android:layout_width="250dp"
@@ -481,6 +501,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="GSTIN: "
+                android:gravity="center"
                 android:padding="10dp"/>
             <EditText
                 android:layout_width="250dp"
@@ -501,6 +522,7 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="@string/contact_of_company"
                 android:padding="10dp"/>
             <EditText
@@ -522,6 +544,7 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="@string/email_of_company"
                 android:padding="10dp"/>
             <EditText
@@ -549,6 +572,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
+                    android:gravity="center"
                     android:text="@string/organisation_account_details"
                     android:id="@+id/orgACC"/>
                 <LinearLayout
@@ -565,6 +589,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/a_c_holder_name"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -585,6 +610,7 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="@string/a_c_number"
                         android:padding="10dp"/>
                     <EditText
@@ -608,6 +634,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/ifsc_code"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -629,6 +656,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/name_of_bank"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"
@@ -650,6 +678,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="@string/bank_branch"
+                        android:gravity="center"
                         android:padding="10dp"/>
                     <EditText
                         android:layout_width="250dp"

@@ -41,7 +41,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -49,9 +48,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import static com.example.projectmanager.Classes.Constants.ID;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+import static com.example.projectmanager.Classes.Constants.SiteID;
 
 public class Attendance extends AppCompatActivity {
 
@@ -200,7 +198,7 @@ public class Attendance extends AppCompatActivity {
         //write the right query
 
         SharedPreferences sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE );
-        siteId=sp.getString( ID, "" );
+        siteId=sp.getString( SiteID, "" );
         Log.e( "msg",siteId);
         DatabaseReference employeeList=FirebaseDatabase.getInstance().getReference("Site Members/"+siteId+"/");
 
