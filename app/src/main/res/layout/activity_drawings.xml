@@ -26,14 +26,14 @@
                 android:textColor="#000"
                 android:id="@+id/headerTop"/>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:id="@+id/drawingList"
                 android:layout_marginTop="30dp"
                android:layout_below="@+id/headerTop">
 
-           </android.support.v7.widget.RecyclerView>
+           </androidx.recyclerview.widget.RecyclerView>
             <ImageView
                 android:layout_width="200dp"
                 android:layout_height="200dp"
@@ -69,9 +69,13 @@
                 />
         </RelativeLayout>
     </ScrollView>
-
-
-    <android.support.design.widget.FloatingActionButton
+    <com.github.barteksc.pdfviewer.PDFView
+        android:id="@+id/pdfView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"

@@ -2,9 +2,7 @@ package com.example.projectmanager;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -12,13 +10,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -26,7 +24,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectmanager.Classes.Constants;
@@ -101,6 +98,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void getLocationPermission(){
+        Log.d(TAG, "getLocationPermission: getting location permissions");
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                mLocationPermissionsGranted = true;
+                initMap();
+            }else{
+                ActivityCompat.requestPermissions(this,
+                        permissions,
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        }else{
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
     private void init(){
         Log.d(TAG, "init: initializing");
 
@@ -161,18 +180,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             editor.putString(Constants.KEY_LONGITUDE,String.valueOf(lng));
             editor.putString( Constants.Locale,city );
             editor.putString(Constants.VIEW,Constants.in);
-            editor.commit();
+            editor.apply();
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
 
                     AlertDialog.Builder builder;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        builder = new AlertDialog.Builder(MapsActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-                    } else {
-                        builder = new AlertDialog.Builder(MapsActivity.this);
-                    }
+                    builder = new AlertDialog.Builder(MapsActivity.this, android.R.style.Theme_Material_Dialog_Alert);
                     builder.setTitle("Location Select")
                             .setMessage("Are you sure to use this location ")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -212,6 +227,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
 
+                            assert currentLocation != null;
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,
                                     "My Location");
@@ -221,18 +237,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             SharedPreferences.Editor editor= sharedPreferences.edit();
                             editor.putString(Constants.KEY_LATITUDE,String.valueOf(lat));
                             editor.putString(Constants.KEY_LONGITUDE,String.valueOf(lng));
-                            editor.commit();
+                            editor.apply();
 
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 public void run() {
 
                                     AlertDialog.Builder builder;
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                        builder = new AlertDialog.Builder(MapsActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-                                    } else {
-                                        builder = new AlertDialog.Builder(MapsActivity.this);
-                                    }
+                                    builder = new AlertDialog.Builder(MapsActivity.this, android.R.style.Theme_Material_Dialog_Alert);
                                     builder.setTitle("Location Select")
                                             .setMessage("Are you sure to use this location ")
                                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -286,31 +298,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         //Toast.makeText(getApplicationContext(),"Started map", Toast.LENGTH_SHORT).show();
+        assert mapFragment != null;
         mapFragment.getMapAsync(MapsActivity.this);
     }
 
-    private void getLocationPermission(){
-        Log.d(TAG, "getLocationPermission: getting location permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                mLocationPermissionsGranted = true;
-                initMap();
-            }else{
-                ActivityCompat.requestPermissions(this,
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        }else{
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

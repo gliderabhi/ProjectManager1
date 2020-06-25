@@ -1,10 +1,11 @@
 package com.example.projectmanager;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class mainMenu extends AppCompatActivity {
 
@@ -25,6 +26,7 @@ public class mainMenu extends AppCompatActivity {
             case R.id.img4: startActivity( new Intent( getApplicationContext(), Materials.class ) ); break;
             case R.id.img5: startActivity( new Intent( getApplicationContext(), AddSiteMembers.class ) ); break;
             case R.id.img6: startActivity( new Intent( getApplicationContext(), Drawings.class ) ); break;
+            case R.id.img7: startActivity( new Intent( getApplicationContext(), ShopsAddition.class ) ); break;
 
         }
     }

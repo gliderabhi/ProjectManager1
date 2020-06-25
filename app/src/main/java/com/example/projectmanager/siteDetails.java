@@ -2,10 +2,11 @@ package com.example.projectmanager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectmanager.Classes.Site;
 import com.google.firebase.database.DataSnapshot;

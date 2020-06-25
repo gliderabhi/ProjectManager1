@@ -7,9 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,14 +21,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.projectmanager.Classes.BankDetails;
 import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.OrganisationDetails;
 import com.example.projectmanager.Classes.UserDetails;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -77,19 +73,21 @@ public class Profile extends AppCompatActivity implements
     private ImageView mapButton;
     private LinearLayout maleLay,femaleLay;
     private String sex;
-
+    private RelativeLayout relFull;
+    private ProgressDialog progress;
+    private FirebaseUser user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_profile );
         hideSoftKeyboard(this);
+
         mFirebase= FirebaseDatabase.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         mAuth=FirebaseAuth.getInstance();
         user=mAuth.getCurrentUser();
         pref = getApplicationContext().getSharedPreferences( Constants.Pref, 0); // 0 - for private mode
         editor = pref.edit();
-
         mDatabaseRef= FirebaseDatabase.getInstance().getReference();
 
         //initialise all the items in the view and generate references
@@ -137,6 +135,7 @@ public class Profile extends AppCompatActivity implements
                 editor.apply();
             }
         } );
+
         ArrayAdapter<String> adapter2=new ArrayAdapter<>( this,android.R.layout.simple_spinner_item,Constants.desig);
         adapter2.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
         desigList.setAdapter( adapter2 );
@@ -175,13 +174,6 @@ public class Profile extends AppCompatActivity implements
             */
            uploadImage();
         } );
-
-
-
-
-
-
-
 
 
     }
@@ -229,16 +221,19 @@ public class Profile extends AppCompatActivity implements
                             desigList.setVisibility( View.GONE );
                             fillCount = 1;
                             progress.dismiss();
+                            relFull.setVisibility(View.VISIBLE);
                         } else {
                             name.setText( user.getDisplayName() );
                             mobileNO.setText( user.getPhoneNumber() );
                             designation.setVisibility( View.GONE );
                             desigList.setVisibility( View.VISIBLE );
                             progress.dismiss();
+                            relFull.setVisibility(View.VISIBLE);
                         }
                     }
                 }else{
                     progress.dismiss();
+                    relFull.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -247,6 +242,7 @@ public class Profile extends AppCompatActivity implements
             public void onCancelled(DatabaseError databaseError) {
                 //Log.e( "msg", "onCancelled", databaseError.toException() );
                 progress.dismiss();
+                relFull.setVisibility(View.VISIBLE);
             }
 
 
@@ -268,6 +264,8 @@ public class Profile extends AppCompatActivity implements
         mapButton=findViewById( R.id.mapProf );
         maleLay=findViewById( R.id.maleLay);
         femaleLay=findViewById( R.id.femaleLay );
+        relFull = findViewById(R.id.ProfileRel);
+        relFull.setVisibility(View.GONE);
 
         maleLay.setOnClickListener( v -> {
             sex= Male;
@@ -338,8 +336,7 @@ public class Profile extends AppCompatActivity implements
         orgBranch.setText( null );
     }
 
-    private ProgressDialog progress;
-    private FirebaseUser user;
+
     private void uploadImage() {
         mStorageRef = FirebaseStorage.getInstance().getReference("/Users/ProfilePics/"+ user.getUid());
         progress = new ProgressDialog(this);
@@ -444,7 +441,7 @@ public class Profile extends AppCompatActivity implements
         userBank=new BankDetails( usr_acc_name,usr_acc_no,usr_ifsc,usr_bank,usr_branch );
         //adding user bank details
          newRef = mDatabaseRef.child("/Bank Details/Users/"+ user.getUid());
-         newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );;
+         newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );
 
 
         //if organisation is yes
@@ -456,7 +453,7 @@ public class Profile extends AppCompatActivity implements
                org_gstin=orgGstin.getText().toString().trim();
                orgDet=new OrganisationDetails( org_nm,org_add,org_email,org_mob,org_gstin );
                newRef = mDatabaseRef.child("/Bank Details/Users/"+ user.getUid());
-               newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );;
+               newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );
 
                //organisation bank details add to firebase
                org_ac_name=orgNAme.getText().toString().trim();
@@ -466,7 +463,7 @@ public class Profile extends AppCompatActivity implements
                org_acc_no=orgAccNo.getText().toString().trim();
                orgBnk=new BankDetails( org_ac_name,org_acc_no,org_ac_ifsc,org_bank,org_branch );
                newRef = mDatabaseRef.child("/Bank Details/Organisation/"+ user.getUid());
-               newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );;
+               newRef.setValue( userBank ).addOnFailureListener( e -> e.printStackTrace() );
            }
 
 

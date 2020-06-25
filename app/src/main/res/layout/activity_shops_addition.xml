@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ShopsAddition">
+
+    <TextView
+        android:id="@+id/CompName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Company name "
+        android:textSize="25dp"
+        />
+    <EditText
+        android:id="@+id/companyName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/CompName"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="30dp"
+        android:hint="Company Name"/>
+
+    <LinearLayout
+        android:id="@+id/dynamicViewAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/companyName"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"/>
+    <Button
+        android:id="@+id/addMoreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dynamicViewAdd"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="+ Add More products"/>
+
+    <Button
+        android:id="@+id/Finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="Finish"
+        />
+
+</RelativeLayout>

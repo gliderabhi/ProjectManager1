@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,12 +14,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.SIteMembers;
@@ -65,25 +67,17 @@ public class NewSite extends AppCompatActivity {
     private DatabaseReference dataRef,SiteRef;
     private String id;
     private EditText loc;
-    private TextView siteLoc;
+    private TextView siteLoc, dateset;
     private ImageView mapButton;
     private String imgurl;
     private SharedPreferences pref;
+    private Button openCal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_new_site );
 
-        hideSoftKeyboard(this);
-        siteCLient=findViewById( R.id. client_name);
-        siteLoc=findViewById( R.id.locationSite );
-        mapButton=findViewById( R.id.mapSite );
-        siteName=findViewById( R.id. site_name);
-        sitePriority=findViewById( R.id.prioritySpinner );
-        calendarView=findViewById( R.id. calender);
-        proceed=findViewById( R.id.proceed );
-        cancel=findViewById( R.id.cancel );
-        loc=findViewById( R.id.locationSites );
+        initialize();
 
 
         pref = getApplicationContext().getSharedPreferences( Constants.Pref, 0); // 0 - for private mode
@@ -117,42 +111,7 @@ public class NewSite extends AppCompatActivity {
                                                        }
                                                    });
 
-        mapButton.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity( new Intent( getApplicationContext(), MapsActivity.class ) );
-            }
-        } );
-        calendarView.setOnDateChangeListener(
-                new CalendarView.OnDateChangeListener() {
-                    @Override
-                    public void onSelectedDayChange(
-                            @NonNull CalendarView view,
-                            int year,
-                            int month,
-                            int dayOfMonth)
-                    {
-                        startDate = dayOfMonth + "-" + (month + 1) + "-" + year;
 
-                    }
-
-                });
-
-        loc.addTextChangedListener( new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String input=s.toString();
-                String link = mapStr1+input+mapStr2;
-                Log.e("msg",link);
-
-            }
-        } );
 
         long date=calendarView.getDate();
 
@@ -211,7 +170,7 @@ public class NewSite extends AppCompatActivity {
                     UserSite siteUser=new UserSite(id ,ongoing,site_name);
                     DatabaseReference siteRef=FirebaseDatabase.getInstance().getReference("/Sites/"+members.getId()+"/Sites Added/"+id+"/");
                     siteRef.setValue( siteUser ).addOnFailureListener( e ->
-                            Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage().toString(),Toast.LENGTH_LONG ).show()   );
+                            Toast.makeText( getApplicationContext(),"Unable to change the user details, please try again "+ e.getMessage(),Toast.LENGTH_LONG ).show()   );
 
                     startActivity(new Intent( getApplicationContext(),AddSiteMembers.class ) );
                 }else{
@@ -230,6 +189,53 @@ public class NewSite extends AppCompatActivity {
 
     }
 
+    private void initialize() {
+        hideSoftKeyboard(this);
+        siteCLient=findViewById( R.id. client_name);
+        siteLoc=findViewById( R.id.locationSite );
+        mapButton=findViewById( R.id.mapSite );
+        siteName=findViewById( R.id. site_name);
+        sitePriority=findViewById( R.id.prioritySpinner );
+        calendarView=findViewById( R.id. calender);
+        proceed=findViewById( R.id.proceed );
+        cancel=findViewById( R.id.cancel );
+        loc=findViewById( R.id.locationSites );
+        openCal = findViewById(R.id.openCal);
+        calendarView.setVisibility(View.GONE);
+        dateset = findViewById(R.id.DateSet);
+        dateset.setVisibility(View.GONE);
+
+        openCal.setOnClickListener(view -> {
+            calendarView.setVisibility(View.VISIBLE);
+            Log.e("msg", "tried opening calender");
+        });
+        mapButton.setOnClickListener(v -> startActivity( new Intent( getApplicationContext(), MapsActivity.class ) ));
+        calendarView.setOnDateChangeListener(
+                (view, year, month, dayOfMonth) -> {
+                    startDate = dayOfMonth + "-" + (month + 1) + "-" + year;
+                    calendarView.setVisibility(View.GONE);
+                    openCal.setVisibility(View.GONE);
+                    dateset.setText(startDate);
+                    dateset.setVisibility(View.VISIBLE);
+                });
+
+        loc.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input=s.toString();
+                String link = mapStr1+input+mapStr2;
+                Log.e("msg",link);
+
+            }
+        } );
+    }
+
     private String getImageUrl(String Id) {
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users/");
         Query q= ref.orderByChild( "id" ).equalTo(Id);
@@ -238,8 +244,9 @@ public class NewSite extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                             UserDetails s = dataSnapshot1.getValue( UserDetails.class );
+                            assert s != null;
                             if (s.getImageUrl() != null) {
-                                imgurl = s.getImageUrl().toString();
+                                imgurl = s.getImageUrl();
                             }else{
                                 imgurl="";
                             }

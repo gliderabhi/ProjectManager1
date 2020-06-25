@@ -31,12 +31,12 @@ public class Constants {
     public static String Priority="Priority";
     public static String SiteNAme="SiteName";
     public static String Creator="Creator";
-    public static String activities[]={"Sites","Employees","Attendance Register","Materials","Suppliers","Materials Supply Ledgers"};
+    public static String[] activities ={"Sites","Employees","Attendance Register","Materials","Suppliers","Materials Supply Ledgers"};
     public static String Locale="locale";
     public static String Male="Male";
     public static String Female="Female";
     public static String SITE_NAME = "SITE_NAME";
-
+    public static  String pdfLink= "https://firebasestorage.googleapis.com/v0/b/budgethandler-4dd29.appspot.com/o/pdf.png?alt=media&token=2a1aef98-9f60-4cfc-9cf0-175cddcef6dc";
     public static class CircleTransform implements Transformation {
         @Override
         public Bitmap transform(Bitmap source) {

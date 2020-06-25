@@ -4,12 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +15,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.SIteMembers;
@@ -122,7 +123,7 @@ public class AddSiteMembers extends AppCompatActivity {
                 // Create a new instance of the ViewHolder, in this case we are using a custom
                 // layout called R.layout.message for each item
                 View view = LayoutInflater.from( parent.getContext() )
-                        .inflate( R.layout.list_tems, parent, false );
+                         .inflate( R.layout.list_tems, parent, false );
 
                 return new ViewHolder( view );
             }

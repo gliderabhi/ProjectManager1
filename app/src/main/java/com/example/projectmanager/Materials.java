@@ -3,7 +3,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -19,41 +24,45 @@ import org.apache.poi.ss.usermodel.Workbook;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-public class Materials extends Activity implements OnClickListener {
+
+import androidx.annotation.NonNull;
+
+import com.example.projectmanager.Classes.ShopKeepers;
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
+import static com.example.projectmanager.Classes.Constants.SiteID;
+
+public class Materials extends Activity  {
     Button writeExcelButton, readExcelButton;
     static String TAG = "ExelLog";
+    Spinner shopName ;
+    String siteId;
+    TextView name ;
+    DatabaseReference shopkeepers;
+    boolean doubleBackToExitPressedOnce = false;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_materials );
-
-      /*  writeExcelButton = (Button) findViewById( R.id.writeExcel );
-        writeExcelButton.setOnClickListener( this );
-        readExcelButton = (Button) findViewById( R.id.readExcel );
-        readExcelButton.setOnClickListener( this );*/
-
-      saveExcelFile(getApplicationContext(), "First Page");
-      readExcelFile( getApplicationContext(), "First Page" );
-    }
-
-    public void onClick(View v) {
-       /* switch (v.getId()) {
-            case R.id.writeExcel:
-                saveExcelFile( this, "myExcel.xls" );
-                break;
-            case R.id.readExcel:
-                readExcelFile( this, "myExcel.xls" );
-                break;
-        }*/
-    }
 
     private static boolean saveExcelFile(Context context, String fileName) {
 
@@ -163,24 +172,121 @@ public class Materials extends Activity implements OnClickListener {
 
     public static boolean isExternalStorageReadOnly() {
         String extStorageState = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED_READ_ONLY.equals( extStorageState )) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState);
     }
 
     public static boolean isExternalStorageAvailable() {
         String extStorageState = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals( extStorageState )) {
-            return true;
+        return Environment.MEDIA_MOUNTED.equals(extStorageState);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate( savedInstanceState );
+        setContentView( R.layout.activity_materials );
+        SharedPreferences sp = getSharedPreferences( PACKAGE_NAME, Context.MODE_PRIVATE );
+        siteId=sp.getString( SiteID, "" );
+        name = findViewById(R.id.sitename);
+        name.setText(siteId);
+        shopName = findViewById(R.id.ShopNameSpinner);
+
+        name.setVisibility(View.GONE);
+        shopName.setVisibility(View.GONE);
+        ArrayList<String > names = new ArrayList<>();
+        names.add("Select name of shop");
+        shopkeepers = FirebaseDatabase.getInstance().getReference("Companies/");
+        shopkeepers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    ShopKeepers sp = child.getValue(ShopKeepers.class);
+                    System.out.println(sp.getName());
+                    names.add(sp.getName());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        ArrayAdapter ad = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, names);
+        shopName.setAdapter(ad);
+        shopName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "Item selected "+ position, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        name.setVisibility(View.VISIBLE);
+        shopName.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.settings, menu);
+        return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    private void signout() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener( task -> {
+                    Toast.makeText(Materials.this, "User Signed Out", Toast.LENGTH_SHORT).show();
+                    finish();
+                } );
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            startActivity( new Intent( getApplicationContext(),mainMenu.class ) );
+            return;
         }
-        return false;
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed( () -> doubleBackToExitPressedOnce=false, 2000);
     }
 
 
 
     @Override
-    public void onBackPressed() {
-        startActivity( new Intent( getApplicationContext(),mainMenu.class ) );
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.profile:
+                startActivity(new Intent( getApplicationContext(),Profile.class ));
+                return true;
+            case R.id.settings:
+                //add the settings to file
+                return true;
+            case R.id.signout:
+                signout();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

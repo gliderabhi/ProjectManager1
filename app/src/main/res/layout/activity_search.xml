@@ -34,12 +34,10 @@
         android:id="@+id/noResultText"
         android:visibility="gone"
         android:textSize="18dp"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_below="@+id/topBar"
         android:layout_margin="10dp"
         android:id="@+id/recyclerSearchProfiles"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

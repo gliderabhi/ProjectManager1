@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/RelLayAttendacne"
+    android:visibility="gone"
     tools:context=".Attendance">
 
     <ProgressBar
@@ -23,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/date"
                 android:text="Date Text"
+                android:textSize="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"/>
             <CalendarView
@@ -74,14 +77,22 @@
                     android:layout_marginLeft="20dp"
                     />
             </LinearLayout>
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/memeberListRec"
                 android:layout_below="@+id/employesList"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp">
-            </android.support.v7.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/memeberListRec"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/btncustom"
+                android:onClick="update"
+                android:text="Update"/>
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

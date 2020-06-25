@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:id="@+id/IdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No"/>
+    <EditText
+        android:id="@+id/prodName"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:hint="Product Name"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Rs"/>
+
+    <EditText
+        android:id="@+id/prodCost"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:hint="Cost"
+        android:inputType="numberDecimal"/>
+</LinearLayout>

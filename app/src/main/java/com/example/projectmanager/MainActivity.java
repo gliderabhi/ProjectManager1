@@ -1,13 +1,14 @@
 package com.example.projectmanager;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,36 +25,36 @@ public class MainActivity extends AppCompatActivity {
     public static final int RC_SIGN_IN = 1;
     private FirebaseAuth.AuthStateListener mAuthStateListner;
 
-    List<AuthUI.IdpConfig> providers = Arrays.asList(
-            new AuthUI.IdpConfig.EmailBuilder().build(),
-            new AuthUI.IdpConfig.PhoneBuilder().build(),
-            new AuthUI.IdpConfig.GoogleBuilder().build());
-
+    List<AuthUI.IdpConfig> providers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mFirebaseAuth=FirebaseAuth.getInstance();
-        mAuthStateListner=new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user=firebaseAuth.getCurrentUser();
-                if (user!=null)
-                {
-                    Toast.makeText(MainActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
-                    startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
-                }
-                else {
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(providers)
-                                    .build(),
-                            RC_SIGN_IN
-                    );
 
-                }
+       providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.PhoneBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build());
+
+
+        mFirebaseAuth=FirebaseAuth.getInstance();
+        mAuthStateListner= firebaseAuth -> {
+            FirebaseUser user=firebaseAuth.getCurrentUser();
+            if (user!=null)
+            {
+                Toast.makeText(MainActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
+                startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
+            }
+            else {
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setIsSmartLockEnabled(false)
+                                .setAvailableProviders(providers)
+                                .build(),
+                        RC_SIGN_IN
+                );
+
             }
         };
 

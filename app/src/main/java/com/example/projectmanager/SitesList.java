@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,8 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.projectmanager.Classes.Constants;
 import com.example.projectmanager.Classes.UserSite;
@@ -49,12 +51,14 @@ public class SitesList extends Activity {
     private String id;
     private SharedPreferences.Editor editor;
     private int height1,height2;
+    private RelativeLayout rel;
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_sites_list );
         SharedPreferences sp=getSharedPreferences( PACKAGE_NAME,Context.MODE_PRIVATE );
          editor=sp.edit();
+          rel = findViewById(R.id.siteListRel);
 
         user= FirebaseAuth.getInstance().getCurrentUser();
         dataRef= FirebaseDatabase.getInstance().getReference();
@@ -196,9 +200,11 @@ public class SitesList extends Activity {
                     }
 
                     progress.dismiss();
+                    rel.setVisibility(View.VISIBLE);
                 } else {
 
                     progress.dismiss();
+                    rel.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -206,6 +212,8 @@ public class SitesList extends Activity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText( getApplicationContext(),databaseError.toString(),Toast.LENGTH_LONG ).show();
                 progress.dismiss();
+                rel.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Loading was cancelled ", Toast.LENGTH_LONG).show();
             }
         } );
 

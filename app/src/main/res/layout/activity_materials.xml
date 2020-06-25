@@ -3,19 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_margin="20dp"
     android:layout_height="match_parent"
     tools:context=".Materials">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Daily Expenditure "
                 android:id="@+id/headerToop"
                 android:textSize="19dp"
@@ -36,9 +30,11 @@
                     android:gravity="center"
                     android:layout_height="wrap_content" />
 
-                <EditText
+                <TextView
                     android:id="@+id/sitename"
                     android:layout_width="200dp"
+                    android:text="Names"
+                    android:textSize="18dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
@@ -50,17 +46,52 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="100dp"
-                    android:text="From : "
+                    android:text="Shop name  : "
                     android:gravity="center"
                     android:textSize="18dp"
                     android:layout_height="wrap_content" />
-                <EditText
+                <Spinner
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/fromName"/>
+                    android:id="@+id/ShopNameSpinner"
+                    android:layout_marginTop="10dp"/>
             </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/billImg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/l2"
+        android:layout_marginTop="20dp">
+       <LinearLayout
+           android:id="@+id/textField"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           >
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="20dp"
+               android:text="Bill Image : "
+               android:textSize="18dp"
+               />
+           <ImageButton
+               android:id="@+id/billButton"
+               android:layout_width="30dp"
+               android:layout_height="30dp"
+               android:layout_marginLeft="100dp"
+               android:background="@drawable/drawing"/>
 
+       </LinearLayout>
+        <ImageView
+            android:id="@+id/ImagePreview"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_below="@+id/textField"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/drawing"
+            android:visibility="gone"/>
 
-        </RelativeLayout>
-    </ScrollView>
+    </RelativeLayout>
 </RelativeLayout>

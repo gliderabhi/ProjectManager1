@@ -1,5 +1,6 @@
 package com.example.projectmanager;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -7,8 +8,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.projectmanager.Classes.DrawingsDetails;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +28,7 @@ import com.squareup.picasso.Picasso;
 import static com.example.projectmanager.Classes.Constants.PACKAGE_NAME;
 import static com.example.projectmanager.Classes.Constants.SiteID;
 
-public class addImage extends AppCompatActivity {
+public class addImage extends Activity {
 
     private EditText title,remarks;
     private TextView name;
@@ -103,7 +104,7 @@ public class addImage extends AppCompatActivity {
 
             Log.e( "msg", mImageUri.toString() );
             type = getContentResolver().getType( mImageUri );
-            if (!type.matches( "application/pdf" ) || type.matches( "application/jpeg" ) || type.matches( "application/png" )) {
+            if (!type.matches( "application/pdf" ) || type.matches( "image/*" )) {
                 Log.e( "msg", type );
                 Picasso.get()
                         .load( mImageUri )
@@ -140,8 +141,13 @@ public class addImage extends AppCompatActivity {
                                                 Toast.makeText( getApplicationContext(),"Unable to add the drawing please try again "+ e.getMessage(),Toast.LENGTH_LONG ).show() );
 
                                     }
+                                }else{
+
+                                    Toast.makeText( getApplicationContext()," Please provide a remark to the file " ,Toast.LENGTH_SHORT).show();
                                 }
                             }
+                        }else{
+                            Toast.makeText( getApplicationContext()," Please provide a title to the file " ,Toast.LENGTH_SHORT).show();
                         }
 
                         startActivity( new Intent( getApplicationContext(),Drawings.class ) );
@@ -160,21 +166,58 @@ public class addImage extends AppCompatActivity {
 
     }
     private void updateDataBase(){
-        AlertDialog.Builder builder=new AlertDialog.Builder( addImage.this );
-        builder.setTitle( " Are you sure to add this image to site drawings? " )
-                .setCancelable(false)
-                .setPositiveButton( " ok ", (dialog, id) -> {
-                    uploadImage();
-                } )
-                .setNegativeButton( "cancel", (dialog, id) -> {
-                    //  Action for 'NO' Button
-                    dialog.cancel();
-                } );
-        //Creating dialog box
-        AlertDialog alert = builder.create();
-        //Setting the title manually
-        alert.setTitle("Are you sure to add this image to site drawings? ");
-        alert.show();
+       if(type!=null) {
+           if (type.matches( "application/pdf" ) || type.matches( "image/jpg" ) || type.matches( "image/png" ) || type.matches( "image/jpeg" ) || type.matches( "image/jpg" )) {
+               AlertDialog.Builder builder = new AlertDialog.Builder( addImage.this );
+               builder.setTitle( " Are you sure to add this image to site drawings? " )
+                       .setCancelable( false )
+                       .setPositiveButton( " ok ", (dialog, id) -> {
+                           uploadImage();
+                       } )
+                       .setNegativeButton( "cancel", (dialog, id) -> {
+                           //  Action for 'NO' Button
+                           dialog.cancel();
+                       } );
+               //Creating dialog box
+               AlertDialog alert = builder.create();
+               //Setting the title manually
+               alert.setTitle( "Are you sure to add this image to site drawings? " );
+               alert.show();
+           }else{
+               AlertDialog.Builder builder = new AlertDialog.Builder( addImage.this );
+               builder.setTitle( " Please select an image or pdf to  proceed " )
+                       .setCancelable( false )
+                       .setPositiveButton( " ok ", (dialog, id) -> {
+                           selectImage();
+                       } )
+                       .setNegativeButton( "cancel", (dialog, id) -> {
+                           //  Action for 'NO' Button
+                           dialog.cancel();
+                       } );
+               //Creating dialog box
+               AlertDialog alert = builder.create();
+               //Setting the title manually
+               alert.setTitle( "Please select an image or pdf to  proceed " );
+               alert.show();
+           }
+       }else{
+           AlertDialog.Builder builder = new AlertDialog.Builder( addImage.this );
+           builder.setTitle( " Please select an image or pdf to  proceed " )
+                   .setCancelable( false )
+                   .setPositiveButton( " ok ", (dialog, id) -> {
+                       selectImage();
+                   } )
+                   .setNegativeButton( "cancel", (dialog, id) -> {
+                       //  Action for 'NO' Button
+                       dialog.cancel();
+                   } );
+           //Creating dialog box
+           AlertDialog alert = builder.create();
+           //Setting the title manually
+           alert.setTitle( "Please select an image or pdf to  proceed " );
+           alert.show();
+       }
+
     }
 
 }

@@ -1,8 +1,7 @@
 package com.example.projectmanager;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +11,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectmanager.Classes.Suppliers;
 import com.firebase.ui.auth.AuthUI;
@@ -24,6 +26,8 @@ import static com.example.projectmanager.Classes.Constants.activities;
 public class SelectionPanel extends AppCompatActivity {
 
     ListView list;
+    private boolean doubleBackToExitPressedOnce= false ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -51,6 +55,7 @@ public class SelectionPanel extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(SelectionPanel.this, "User Signed Out", Toast.LENGTH_SHORT).show();
+                        startActivity( new Intent( getApplicationContext(),MainActivity.class ) );
                         finish();
                     }
                 });
@@ -81,6 +86,16 @@ public class SelectionPanel extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        if (doubleBackToExitPressedOnce) {
+            finishAndRemoveTask();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed( () -> doubleBackToExitPressedOnce=false, 2000);
         startActivity( new Intent( getApplicationContext(),SelectionPanel.class ) );
         super.onBackPressed();
     }
